@@ -1,3 +1,4 @@
 from django.contrib import admin
+from apps.divisi.models import Divisi
 
-# Register your models here.
+admin.site.register(Divisi)
