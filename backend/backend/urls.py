@@ -26,5 +26,8 @@ urlpatterns = [
         path('jabatan/', include('apps.jabatan.urls')),
         # path("login/", admin.site.urls),
         # path("register/", admin.site.urls),
+        path('lampiran/', include('apps.lampiran.urls')),
+        path('surat/', include('apps.surat.urls')),
+        path('group/', include('apps.group.urls')),
     ])),
 ]

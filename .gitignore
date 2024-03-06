@@ -1,5 +1,6 @@
 .idea/
 venv/
+env/
 .env
 .env.docker.local
 _pycache_/
