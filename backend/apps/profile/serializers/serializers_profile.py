@@ -11,8 +11,12 @@ class UserSerializer(serializers.ModelSerializer):
                     'last_login': {'read_only': True}}
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(source='id_user')
+    user = UserSerializer(source='id_user', read_only=True)
     class Meta:
         model = Profile
-        fields = ['id_profile','user','nama_lengkap','alamat','email','kota','phone_number','nik_group','nik_lokal','organisasi']
+        fields = ['id_profile','id_user','user','nama_lengkap','alamat','email','kota','phone_number','nik_group','nik_lokal','organisasi']
+        extra_kwargs = {'id_user': {'write_only': True}}
+
+
+
 
