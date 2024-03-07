@@ -12,4 +12,4 @@ class JabatanRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView)
     queryset = Jabatan.objects.all()
     serializer_class = JabatanSerializer
     permission_classes = [IsAuthenticatedAndTokenExists]
-    lookup_field = 'id_jabatan'
+    # lookup_field = 'id_jabatan'

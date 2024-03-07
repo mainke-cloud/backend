@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 
 class SuratSerializer(serializers.ModelSerializer): 
     pengirim = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
+    
 
     class Meta:
         model = Surat 
@@ -11,10 +12,15 @@ class SuratSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         #user = self.context.get('user')
-
-        surat = Surat.objects.create(pengirim = validated_data["pengirim"], no_agenda = validated_data["no_agenda"], no_surat = validated_data["no_surat"], 
-                                     perihal = validated_data["perihal"], status = validated_data["status"], urgensi = validated_data["urgensi"], 
-                                     tanggal_pengiriman = validated_data["tanggal_pengiriman"], id_lampiran = validated_data["id_lampiran"])
+        surat = Surat.objects.create(
+            pengirim = validated_data["pengirim"],
+            no_agenda = validated_data["no_agenda"],
+            no_surat = validated_data["no_surat"], 
+            perihal = validated_data["perihal"],
+            status = validated_data["status"],
+            urgensi = validated_data["urgensi"], 
+            tanggal_pengiriman = validated_data["tanggal_pengiriman"],
+            id_lampiran = validated_data["id_lampiran"])
 
         surat.save()
 

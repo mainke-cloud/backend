@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'apps.lampiran',
     'apps.surat',
     'apps.group',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -89,7 +90,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'ndecoofis',
         'USER': 'postgres',
-        'PASSWORD': 'raparsalan24',
+        # 'PASSWORD': 'raparsalan24',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '5432',
     }

@@ -7,4 +7,4 @@ class Lampiran(models.Model):
     file = models.FileField(upload_to='event_files/')
 
     def __str__(self):
-        return self.name 
+        return self.nama_lampiran 

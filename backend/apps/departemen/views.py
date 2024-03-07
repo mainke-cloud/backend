@@ -13,4 +13,4 @@ class DepartemenRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
     serializer_class = DepartemenSerializer
     permission_classes = [IsAuthenticatedAndTokenExists]
     
-    lookup_field = 'id_departemen'
+    # lookup_field = 'id_departemen'

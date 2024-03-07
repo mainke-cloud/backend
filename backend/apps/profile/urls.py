@@ -5,7 +5,7 @@ app_name = "profile"
 urlpatterns = [
     path("", ProfileListCreateAPIView.as_view(), name="profile-list"),
     path("create/", ProfileListCreateAPIView.as_view(), name="profile-create"),
-    path("detail/<str:id_profile>/", ProfileRetrieveUpdateDestroyAPIView.as_view(), name="profile-detail"),
-    path("detail/<str:id_profile>/", ProfileRetrieveUpdateDestroyAPIView.as_view(), name="profile-update"),
-    path("detail/<str:id_profile>/", ProfileRetrieveUpdateDestroyAPIView.as_view(), name="profile-delete"),
+    path("details/<str:pk>/", ProfileRetrieveUpdateDestroyAPIView.as_view(), name="profile-detail"),
+    path("update/<str:pk>/", ProfileRetrieveUpdateDestroyAPIView.as_view(), name="profile-update"),
+    path("delete/<str:pk>/", ProfileRetrieveUpdateDestroyAPIView.as_view(), name="profile-delete"),
 ]
