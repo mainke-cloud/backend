@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Surat, Disposisi
 from django.contrib.auth.models import User
-
+from apps.profile.serializers.serializers_profile import UserSerializer
 # class SuratSerializer(serializers.ModelSerializer): 
 #     pengirim = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
     
@@ -52,6 +52,7 @@ class LogSerializer(serializers.Serializer):
 
 class SuratSerializer(serializers.ModelSerializer):
     log = LogSerializer(many=True)
+    penerima = UserSerializer(many=True)
 
     class Meta:
         model = Surat
