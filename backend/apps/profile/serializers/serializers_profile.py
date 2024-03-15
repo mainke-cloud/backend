@@ -11,11 +11,24 @@ class UserSerializer(serializers.ModelSerializer):
                     'last_login': {'read_only': True}}
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(source='id_user', read_only=True)
+    detail_user = UserSerializer(source='user', read_only=True)
     class Meta:
         model = Profile
-        fields = ['id_profile','id_user','user','nama_lengkap','alamat','email','kota','phone_number','nik_group','nik_lokal','organisasi']
-        extra_kwargs = {'id_user': {'write_only': True}}
+        fields = ['id','detail_user','user','nama_lengkap','alamat','email','kota','phone_number','nik_group','nik_lokal','organisasi']
+        extra_kwargs = {'user': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = validated_data.pop('user', None)
+        profile = Profile.objects.create(user=user, **validated_data)
+        return profile
+
+    def update(self, instance, validated_data):
+        user = validated_data.pop('user', None)
+        if user:
+            instance.user = user
+        instance.nama_lengkap = validated_data.get('nama_lengkap', instance.nama_lengkap)
+        instance.save()
+        return instance
 
 
 

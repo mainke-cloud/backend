@@ -2,48 +2,6 @@ from rest_framework import serializers
 from .models import Surat, Disposisi
 from django.contrib.auth.models import User
 from apps.profile.serializers.serializers_profile import UserSerializer
-# class SuratSerializer(serializers.ModelSerializer): 
-#     pengirim = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), required=False, allow_null=True)
-    
-
-#     class Meta:
-#         model = Surat 
-#         fields = ['id_surat','pengirim','penerima','no_agenda', 'no_surat', 'perihal', 'status', 'urgensi', 'tanggal_pengiriman', 'id_lampiran']
-
-#     def create(self, validated_data):
-#         #user = self.context.get('user')
-#         surat = Surat.objects.create(
-#             pengirim = validated_data["pengirim"],
-#             no_agenda = validated_data["no_agenda"],
-#             no_surat = validated_data["no_surat"], 
-#             perihal = validated_data["perihal"],
-#             status = validated_data["status"],
-#             urgensi = validated_data["urgensi"], 
-#             tanggal_pengiriman = validated_data["tanggal_pengiriman"],
-#             id_lampiran = validated_data["id_lampiran"])
-
-#         surat.save()
-
-#         for penerima in validated_data['penerima']:
-#             surat.penerima.add(penerima)
-
-#         return surat
-    
-#     def update(self, instance, validated_data):
-#         instance.no_agenda = validated_data['no_agenda']
-#         instance.no_surat = validated_data['no_surat']
-#         instance.perihal = validated_data['perihal']
-#         instance.status = validated_data['status']
-#         instance.urgensi = validated_data['urgensi']
-#         instance.tanggal_pengiriman = validated_data['tanggal_pengiriman']
-#         instance.id_lampiran = validated_data['id_lampiran']
-#         instance.penerima.clear()
-        
-#         for penerima in validated_data['penerima']:
-#             instance.penerima.add(penerima)
-#         instance.save()
-
-#         return instance
 
 class LogSerializer(serializers.Serializer):
     aksi = serializers.CharField()

@@ -4,7 +4,7 @@ from .models import Lampiran
 class LampiranSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lampiran
-        fields = ['id_lampiran', 'nama_lampiran', 'file']
+        fields = ['id', 'nama_lampiran', 'file']
 
     def create(self, validated_data):
         return Lampiran.objects.create(**validated_data)

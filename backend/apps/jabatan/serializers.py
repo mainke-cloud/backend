@@ -4,7 +4,7 @@ from apps.jabatan.models import Jabatan
 class JabatanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Jabatan
-        fields = ['id_jabatan', 'nama_jabatan']
+        fields = ['id', 'nama_jabatan']
 
     def create(self, validated_data):
         return Jabatan.objects.create(**validated_data)

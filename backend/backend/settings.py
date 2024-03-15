@@ -25,6 +25,7 @@ SECRET_KEY = "django-insecure-h(35e6h29f%nz=(3jaa(c_q-e=nk@y+3!ubsvs@efc#y##4g*p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = ['0361-114-5-16-106.ngrok-free.app']
 ALLOWED_HOSTS = []
 
 
@@ -49,6 +50,9 @@ INSTALLED_APPS = [
     'apps.surat',
     'apps.group',
     'drf_yasg',
+    'djongo',
+    'pymongo',
+    'sqlparse'
 ]
 
 MIDDLEWARE = [
@@ -87,12 +91,8 @@ WSGI_APPLICATION = "backend.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'djongo',
         'NAME': 'ndecoofis',
-        'USER': 'postgres',
-        'PASSWORD': 'raparsalan24',
-        'HOST': 'localhost',
-        'PORT': '5432',
     }
 }
 

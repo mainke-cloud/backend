@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Divisi',
             fields=[
-                ('id_divisi', models.AutoField(primary_key=True, serialize=False)),
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('nama_divisi', models.CharField(max_length=100)),
             ],
         ),
