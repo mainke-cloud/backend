@@ -10,5 +10,5 @@ urlpatterns = [
     path("delete/<int:pk>/", SuratRetrieveUpdateDelete.as_view(), name="surat-delete"),
     path("disposisi/", DisposisiListCreateView.as_view(), name="disposisi-list"),
     path("disposisi/create/", DisposisiListCreateView.as_view(), name="disposisi-create"),
-    path("details/<int:pk>/", DisposisiRetrieve.as_view(), name="surat-detail"),
+    path("disposisi/details/<int:pk>/", DisposisiRetrieve.as_view(), name="surat-detail"),
 ]
