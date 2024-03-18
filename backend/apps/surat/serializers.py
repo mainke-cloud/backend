@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import Surat, Disposisi
 from django.contrib.auth.models import User
 from apps.profile.serializers.serializers_profile import UserSerializer
+from apps.lampiran.serializers import LampiranSerializer
 
 class LogSerializer(serializers.Serializer):
     aksi = serializers.CharField()
@@ -10,11 +11,16 @@ class LogSerializer(serializers.Serializer):
 
 class SuratSerializer(serializers.ModelSerializer):
     log = LogSerializer(many=True)
-    penerima = UserSerializer(many=True)
+    # penerima = UserSerializer(many=True,read_only=True)
+    penerima = serializers.PrimaryKeyRelatedField(queryset=User.objects.all(), many=True, write_only=True)
+    lampiran_detail = LampiranSerializer(source='lampiran', read_only=True)
+    penerima_detail = UserSerializer(source='penerima',many=True, read_only=True)
 
     class Meta:
         model = Surat
-        fields = ['id_surat', 'penerima', 'no_agenda', 'no_surat', 'perihal', 'status', 'urgensi', 'tanggal_pengiriman', 'id_lampiran', 'log']
+        fields = ['id','penerima','penerima_detail', 'no_agenda', 'no_surat', 'perihal', 'status', 'urgensi', 'tanggal_pengiriman','lampiran_detail','lampiran', 'log']
+        extra_kwargs = {'lampiran': {'write_only': True}}
+
 
     def create(self, validated_data):
         log_data = validated_data.pop('log', [])
@@ -42,7 +48,7 @@ class DisposisiSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Disposisi 
-        fields = ['id_disposisi','disposisi_oleh','disposisi_kepada','surat', 'komentar', 'tanggal_disposisi']
+        fields = ['id','disposisi_oleh','disposisi_kepada','surat', 'komentar', 'tanggal_disposisi']
     
     def create(self, validated_data):
         #user = self.context.get('user')

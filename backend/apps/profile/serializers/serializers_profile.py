@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username','date_joined','last_login']
-        extra_kwargs = {'username': {'read_only': True},
+        fields = ['id', 'email','date_joined','last_login']
+        extra_kwargs = {'email': {'read_only': True},
                     'date_joined': {'read_only': True},
                     'last_login': {'read_only': True}}
 
