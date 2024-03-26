@@ -11,11 +11,26 @@ class UserSerializer(serializers.ModelSerializer):
                     'last_login': {'read_only': True}}
 
 class ProfileSerializer(serializers.ModelSerializer):
-    detail_user = UserSerializer(source='user', read_only=True)
+    alamat = serializers.CharField(source='profile.alamat', read_only=True)
+    kota = serializers.CharField(source='profile.kota', read_only=True)
+    phone_number = serializers.CharField(source='profile.phone_number', read_only=True)
+    nik_group = serializers.CharField(source='profile.nik_group', read_only=True)
+    nik_lokal = serializers.CharField(source='profile.nik_lokal', read_only=True)
+    organisasi = serializers.CharField(source='profile.organisasi', read_only=True)
+    nama_lengkap = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()
+
+
+    def get_nama_lengkap(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+
+    def get_email(self, obj):
+        return f"{obj.email}"
+        
     class Meta:
         model = Profile
-        fields = ['id','detail_user','user','nama_lengkap','alamat','email','kota','phone_number','nik_group','nik_lokal','organisasi']
-        extra_kwargs = {'user': {'write_only': True}}
+        fields = ['id', 'nama_lengkap', 'alamat', 'email', 'kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi']
+        # extra_kwargs = {'user': {'write_only': True}}
 
     def create(self, validated_data):
         user = validated_data.pop('user', None)
