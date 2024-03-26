@@ -6,39 +6,36 @@ from rest_framework.response import Response
 from django.contrib.auth.models import User
 
 
-class ProfileListCreateAPIView(generics.ListCreateAPIView):
-    # queryset = Profile.objects.all()
+class ProfileAPIView(generics.ListCreateAPIView):
     serializer_class = ProfileSerializer
-    # permission_classes = [IsAuthenticatedAndTokenExists]
 
+    def get_object(self):
+        logged_user = self.request.COOKIES.get('email')
+        profile = Profile.objects.get(user__email=logged_user)
+        return profile
+    
     def get(self, request):
-        logged_user = request.COOKIES.get('email')
-        print(request.COOKIES.get('email'))
-        user_profile = User.objects.get(email=logged_user)
-        serializer = ProfileSerializer(user_profile)
+        profile = self.get_object()
+        serializer = ProfileSerializer(profile)
         return Response(serializer.data)
     
-    def post(self, request):
-        serializer = ProfileSerializer(data=request.data)
+    def post(self, request):   
+        serializer = ProfileSerializer(data=request.data, context={'request':request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
-class UserListCreateAPIView(generics.ListCreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticatedAndTokenExists]
+class ProfileUpdateAPIView(generics.UpdateAPIView):
+    serializer_class = ProfileSerializer
 
-class ProfileRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    # queryset = Profile.objects.all()
-    # serializer_class = ProfileSerializer
-    # lookup_field = 'id_profile'
-    # permission_classes = [IsAuthenticatedAndTokenExists] 
+    def get_object(self):
+        logged_user = self.request.COOKIES.get('email')
+        profile = Profile.objects.get(user__email=logged_user)
+        return profile
 
-    def get(self, request):
-        logged_user = request.COOKIES.get('email')
-        print("TAHU:  ",request.COOKIES.get('email'))
-        user_profile = Profile.objects.get(email=logged_user)
-        print("TAHU2: ",user_profile)
-        serializer = ProfileSerializer(user_profile)
+    def update(self, request, *args, **kwargs):
+        profile = self.get_object()
+        serializer = ProfileSerializer(profile, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)

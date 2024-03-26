@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 
 class UserRegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(write_only=True)
-    # email = serializers.EmailField(required=True)
 
     def __init__(self, *args, **kwargs):
         super(UserRegisterSerializer, self).__init__(*args, **kwargs)

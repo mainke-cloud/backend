@@ -11,29 +11,23 @@ class UserSerializer(serializers.ModelSerializer):
                     'last_login': {'read_only': True}}
 
 class ProfileSerializer(serializers.ModelSerializer):
-    alamat = serializers.CharField(source='profile.alamat', read_only=True)
-    kota = serializers.CharField(source='profile.kota', read_only=True)
-    phone_number = serializers.CharField(source='profile.phone_number', read_only=True)
-    nik_group = serializers.CharField(source='profile.nik_group', read_only=True)
-    nik_lokal = serializers.CharField(source='profile.nik_lokal', read_only=True)
-    organisasi = serializers.CharField(source='profile.organisasi', read_only=True)
-    nama_lengkap = serializers.SerializerMethodField()
-    email = serializers.SerializerMethodField()
-
+    user_id = serializers.PrimaryKeyRelatedField(source='user',read_only=True)    
+    nama_lengkap = serializers.SerializerMethodField(read_only=True)
+    email = serializers.SerializerMethodField(read_only=True)
 
     def get_nama_lengkap(self, obj):
-        return f"{obj.first_name} {obj.last_name}"
+        return f"{obj.user.first_name} {obj.user.last_name}"
 
     def get_email(self, obj):
-        return f"{obj.email}"
+        return f"{obj.user.email}"
         
     class Meta:
         model = Profile
-        fields = ['id', 'nama_lengkap', 'alamat', 'email', 'kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi']
-        # extra_kwargs = {'user': {'write_only': True}}
-
+        fields = ['user_id','nama_lengkap', 'alamat', 'email', 'kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi']
+    
     def create(self, validated_data):
-        user = validated_data.pop('user', None)
+        logged_user = self.context['request'].COOKIES.get('email')
+        user = User.objects.get(email=logged_user)
         profile = Profile.objects.create(user=user, **validated_data)
         return profile
 
@@ -41,7 +35,12 @@ class ProfileSerializer(serializers.ModelSerializer):
         user = validated_data.pop('user', None)
         if user:
             instance.user = user
-        instance.nama_lengkap = validated_data.get('nama_lengkap', instance.nama_lengkap)
+        instance.alamat = validated_data.get('alamat', instance.alamat)
+        instance.kota = validated_data.get('kota', instance.kota)
+        instance.phone_number = validated_data.get('phone_number', instance.phone_number)
+        instance.nik_group = validated_data.get('nik_group', instance.nik_group)
+        instance.nik_lokal = validated_data.get('nik_lokal', instance.nik_lokal)
+        instance.organisasi = validated_data.get('organisasi', instance.organisasi)
         instance.save()
         return instance
 
