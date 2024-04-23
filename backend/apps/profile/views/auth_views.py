@@ -11,11 +11,6 @@ from datetime import datetime as dt
 from django.contrib.auth import authenticate
 from django.conf import settings
 
-# class IsAuthenticatedAndTokenExists(permissions.BasePermission):
-#     def has_permission(self, request, view):
-#         token = request.COOKIES.get('jwt')
-
-#         return bool(token)
 
 class IsAuthenticatedAndTokenExists(permissions.BasePermission):
     def has_permission(self, request, view):
