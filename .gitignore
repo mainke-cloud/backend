@@ -1,5 +1,4 @@
 .idea/
-myenv/
 env/
 .env
 .env.docker.local

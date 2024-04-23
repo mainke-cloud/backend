@@ -12,9 +12,10 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
     # permission_classes = [IsAuthenticatedAndTokenExists]
 
     def get(self, request):
-        logged_user = request.COOKIES.get('email')
-        print(request.COOKIES.get('email'))
-        user_profile = User.objects.get(email=logged_user)
+        logged_user = request.COOKIES.get('id')
+        print(logged_user)
+        user_profile = User.objects.get(id=logged_user)
+        print(user_profile)
         serializer = ProfileSerializer(user_profile)
         return Response(serializer.data)
     

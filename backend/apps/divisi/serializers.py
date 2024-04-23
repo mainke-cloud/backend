@@ -8,6 +8,7 @@ class DivisiSerializer(serializers.ModelSerializer):
         fields = ['id','nama_divisi']
 
     def create(self, validated_data):
+        
         return Divisi.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
