@@ -8,7 +8,7 @@ class DepartemenSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Departemen
-        fields = ['id', 'nama_departemen', 'divisi_detail','divisi']
+        fields = ['id', 'nama_departemen','kode_departemen','divisi_detail','divisi']
         extra_kwargs = {'divisi': {'write_only': True}}
 
     def create(self, validated_data):
@@ -21,5 +21,6 @@ class DepartemenSerializer(serializers.ModelSerializer):
         if divisi:
             instance.divisi = divisi
         instance.nama_departemen = validated_data.get('nama_departemen', instance.nama_departemen)
+        instance.kode_departemen = validated_data.get('kode_departemen', instance.kode_departemen)
         instance.save()
         return instance
