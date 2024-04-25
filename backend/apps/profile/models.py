@@ -1,5 +1,6 @@
 from django.db import models
 from apps.departemen.models import Departemen
+from apps.jabatan.models import Jabatan
 from django.contrib.auth.models import User
 
 class Profile(models.Model):
@@ -7,6 +8,7 @@ class Profile(models.Model):
     nama_lengkap = models.CharField(max_length=50, default="-")
     email = models.EmailField()
     departemen = models.ForeignKey(Departemen, on_delete=models.CASCADE, related_name='departemen_user', null=True, default=None)
+    jabatan = models.ForeignKey(Jabatan, on_delete=models.CASCADE, related_name='jabatan_user', null=True, default=None)
     alamat = models.CharField(max_length=100, default="-")
     kota = models.CharField(max_length=50, default="-")
     phone_number = models.CharField(max_length=15, default="-")

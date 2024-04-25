@@ -11,12 +11,15 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         id_user = self.request.query_params.get('id_user')
+        id_jabatan = self.request.query_params.get('id_jabatan')
         id_departemen = self.request.query_params.get('id_departemen')
         queryset = Profile.objects.all()
         if id_user :
             queryset = queryset.filter(user_id = id_user)
         elif id_departemen :
             queryset = queryset.filter(departemen_id = id_departemen)
+        elif id_jabatan :
+            queryset = queryset.filter(jabatan_id = id_jabatan)
         return queryset
 
 
@@ -34,7 +37,11 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
 class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProfileSerializer
     lookup_field = 'user_id'
-    queryset = Profile.objects.all()
+    
+    def get_queryset(self):
+        id = self.kwargs[self.lookup_field]
+        queryset = Profile.objects.filter(user_id = id)
+        return queryset
 
 
     # def get_object(self):

@@ -2,7 +2,9 @@ from rest_framework import serializers
 from apps.profile.models import Profile
 from django.contrib.auth.models import User
 from apps.departemen.models import Departemen
+from apps.jabatan.models import Jabatan
 from apps.departemen.serializers import DepartemenSerializer
+from apps.jabatan.serializers import JabatanSerializer
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -17,6 +19,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
     email = serializers.EmailField(source='user.email', required=False)
     departemen_detail = DepartemenSerializer(source='departemen', read_only=True)
+    jabatan_detail = JabatanSerializer(source='jabatan', read_only=True)
+
     
     # def get_user(self, obj):
     #     logged_user = self.context['request'].COOKIES.get('id')
@@ -25,9 +29,10 @@ class ProfileSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = Profile
-        fields = ['user_id','username','email','nama_lengkap','departemen_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','nama_lengkap']
+        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap']
         extra_kwargs = {
         'departemen': {'write_only': True},
+        'jabatan': {'write_only': True},
         'user': {'write_only': True},
         }
     
@@ -55,9 +60,9 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.nik_lokal = validated_data.get('nik_lokal', instance.nik_lokal)
         instance.organisasi = validated_data.get('organisasi', instance.organisasi)
         instance.departemen = validated_data.get('departemen', instance.departemen)
+        instance.jabatan = validated_data.get('jabatan', instance.jabatan)
         instance.nama_lengkap = validated_data.get('nama_lengkap', instance.nama_lengkap)
         instance.is_first_login = validated_data.get('is_first_login', instance.is_first_login)
-
 
         instance.save()
         return instance
