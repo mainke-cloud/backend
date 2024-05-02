@@ -5,6 +5,7 @@ from .models import Lampiran
 from .serializers import LampiranSerializer
 
 class LampiranListCreateView(generics.ListCreateAPIView):
+    serializer_class = LampiranSerializer
     def get(self, request):
         lampirans = Lampiran.objects.all()
         serializer = LampiranSerializer(lampirans, many=True)

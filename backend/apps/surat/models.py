@@ -19,7 +19,8 @@ class Surat(models.Model):
     referensi = models.ForeignKey(Lampiran, on_delete=models.CASCADE, related_name='referensi_surat')
     lampiran = models.ForeignKey(Lampiran, on_delete=models.CASCADE, related_name='lampiran_surat')
     status = models.CharField(max_length=100)
-    urgensi = models.CharField(max_length=100)    
+    urgensi = models.CharField(max_length=100)  
+    tanggal_pengiriman = models.DateField()  
     log = models.JSONField(default=list)
 
     def __str__(self):
