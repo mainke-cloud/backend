@@ -69,7 +69,8 @@ class LoginView(APIView):
         response.set_cookie(key='id', value=user.id, httponly=True)
         response.data = {
             'message': 'Login Success!',
-            "jwt" : token
+            "jwt" : token,
+            "id": user.id
         }
 
         return response

@@ -14,6 +14,7 @@ class Surat(models.Model):
     jenis_surat = models.CharField(max_length=100,)
     prioritas_surat = models.CharField(max_length=100)
     komentar_surat = models.JSONField(default=list)
+    isi_surat = models.TextField(default='-')
     file_surat = models.FileField(upload_to='event_files/')
     tembusan = models.ManyToManyField(User, related_name='tembusan_surat')
     referensi = models.ForeignKey(Lampiran, on_delete=models.CASCADE, related_name='referensi_surat')

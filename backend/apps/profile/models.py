@@ -16,6 +16,8 @@ class Profile(models.Model):
     nik_lokal = models.CharField(max_length=20, default="-")
     organisasi = models.CharField(max_length=100, default="-")
     is_first_login = models.BooleanField(default=True)
+    is_sekretaris = models.BooleanField(default=False)
+    is_delegasi = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.nama_lengkap}" 
