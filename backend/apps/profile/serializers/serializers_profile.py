@@ -7,12 +7,11 @@ from apps.departemen.serializers import DepartemenSerializer
 from apps.jabatan.serializers import JabatanSerializer
 
 class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
     class Meta:
-        model = User
-        fields = ['id', 'username','date_joined','last_login']
-        extra_kwargs = {'username': {'read_only': True},
-                    'date_joined': {'read_only': True},
-                    'last_login': {'read_only': True}}
+        model = Profile
+        fields = ['user_id','username','nama_lengkap']
+        extra_kwargs = {'user': {'write_only': True}}
 
 class ProfileSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(source='user',read_only=True)
@@ -20,6 +19,8 @@ class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email', required=False)
     departemen_detail = DepartemenSerializer(source='departemen', read_only=True)
     jabatan_detail = JabatanSerializer(source='jabatan', read_only=True)
+
+    sekretaris_detail = UserSerializer(source='sekretaris', read_only=True,many=True)
 
     
     # def get_user(self, obj):
@@ -29,13 +30,14 @@ class ProfileSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = Profile
-        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','is_delegasi','is_sekretaris','departemen','jabatan','nama_lengkap']
+        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap','sekretaris','sekretaris_detail']
         extra_kwargs = {
         'departemen': {'write_only': True},
         'jabatan': {'write_only': True},
+        'sekretaris': {'write_only': True},
         'user': {'write_only': True},
         }
-    
+
     def create(self, validated_data):
         email = validated_data.pop('email', None)
         id_user = self.context['request'].query_params.get('id_user')
@@ -49,26 +51,27 @@ class ProfileSerializer(serializers.ModelSerializer):
             user = instance.user
             email = user_data.get('email', None)
             if email is not None and email != user.email:
-                # Periksa apakah alamat email telah diubah
                 user.email = email
                 user.save()
 
+        # Update departemen, jabatan, dan sekretaris
+        instance.departemen = validated_data.get('departemen', instance.departemen)
+        instance.jabatan = validated_data.get('jabatan', instance.jabatan)
+        instance.sekretaris.set(validated_data.get('sekretaris', instance.sekretaris.all()))
+
+        # Update field lainnya
         instance.alamat = validated_data.get('alamat', instance.alamat)
         instance.kota = validated_data.get('kota', instance.kota)
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.nik_group = validated_data.get('nik_group', instance.nik_group)
         instance.nik_lokal = validated_data.get('nik_lokal', instance.nik_lokal)
         instance.organisasi = validated_data.get('organisasi', instance.organisasi)
-        instance.departemen = validated_data.get('departemen', instance.departemen)
-        instance.jabatan = validated_data.get('jabatan', instance.jabatan)
         instance.nama_lengkap = validated_data.get('nama_lengkap', instance.nama_lengkap)
         instance.is_first_login = validated_data.get('is_first_login', instance.is_first_login)
-        instance.is_sekretaris = validated_data.get('is_sekretaris', instance.is_sekretaris)
-        instance.is_delegasi = validated_data.get('is_delegasi', instance.is_delegasi)
-
 
         instance.save()
         return instance
+
 
 
 

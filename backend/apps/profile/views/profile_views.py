@@ -43,6 +43,13 @@ class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateDestroyAPIView):
         queryset = Profile.objects.filter(user_id = id)
         return queryset
 
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()  
+        serializer = self.get_serializer(instance, data=request.data, partial=True) 
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
 
     # def get_object(self):
     #     logged_user = self.request.COOKIES.get('id')
