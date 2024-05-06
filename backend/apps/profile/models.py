@@ -20,3 +20,13 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.nama_lengkap}" 
+
+class InfoSekretaris(models.Model):
+    karyawan = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='infos_sekretaris')
+    sekretaris = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='infos_sekretaris_sebagai_sekretaris')
+    status = models.CharField(max_length=50)
+    sifat = models.CharField(max_length=50)
+    hak_sekretaris = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"{self.karyawan.nama_lengkap} - {self.sekretaris}"

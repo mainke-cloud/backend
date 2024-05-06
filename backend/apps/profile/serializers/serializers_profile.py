@@ -21,6 +21,7 @@ class ProfileSerializer(serializers.ModelSerializer):
     jabatan_detail = JabatanSerializer(source='jabatan', read_only=True)
 
     sekretaris_detail = UserSerializer(source='sekretaris', read_only=True,many=True)
+    # status, sifat, hak sekretaris
 
     
     # def get_user(self, obj):
