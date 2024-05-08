@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.profile.models import Profile
+from apps.profile.models import *
 from django.contrib.auth.models import User
 from apps.departemen.models import Departemen
 from apps.jabatan.models import Jabatan
@@ -19,19 +19,21 @@ class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source='user.email', required=False)
     departemen_detail = DepartemenSerializer(source='departemen', read_only=True)
     jabatan_detail = JabatanSerializer(source='jabatan', read_only=True)
-
-    # sekretaris_detail = UserSerializer(source='sekretaris', read_only=True,many=True)
-    # status, sifat, hak sekretaris
+    my_sekretaris = serializers.SerializerMethodField()
         
     class Meta:
         model = Profile
-        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap']
+        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap','my_sekretaris']
         extra_kwargs = {
         'departemen': {'write_only': True},
         'jabatan': {'write_only': True},
-        # 'sekretaris': {'write_only': True},
         'user': {'write_only': True},
+        'sekretaris': {'write_only': True},
         }
+    
+    def get_my_sekretaris(self, obj):
+        sekretaris = Sekretaris.objects.filter(atasan=obj)
+        return SekretarisSerializer(sekretaris, many=True).data
 
     def create(self, validated_data):    
         user = validated_data.pop('user', None)
@@ -48,6 +50,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
+        id_user = self.context['request'].query_params.get('id_user')
         if user_data:
             user = instance.user
             email = user_data.get('email', None)
@@ -55,11 +58,9 @@ class ProfileSerializer(serializers.ModelSerializer):
                 user.email = email
                 user.save()
 
-        # Update departemen, jabatan, dan sekretaris
+        # Update departemen, jabatan
         instance.departemen = validated_data.get('departemen', instance.departemen)
         instance.jabatan = validated_data.get('jabatan', instance.jabatan)
-        # instance.sekretaris.set(validated_data.get('sekretaris', instance.sekretaris.all()))
-
         # Update field lainnya
         instance.alamat = validated_data.get('alamat', instance.alamat)
         instance.kota = validated_data.get('kota', instance.kota)
@@ -74,6 +75,39 @@ class ProfileSerializer(serializers.ModelSerializer):
         return instance
 
 
+class SekretarisSerializer(serializers.ModelSerializer):
+    user_id = serializers.PrimaryKeyRelatedField(source='sekretaris.user', queryset=User.objects.all())
+    username = serializers.ReadOnlyField(source='sekretaris.user.username')
+    class Meta:
+        model = Sekretaris
+        fields = ('user_id','username','status', 'sifat', 'hak_sekretaris')
+
+    def create(self, validated_data):
+        id_user = self.context['request'].query_params.get('id_user')
+        atasan = Profile.objects.get(user_id=id_user)
+        sekretaris = validated_data.pop('sekretaris', None)
+        sekretaris_obj = Profile.objects.get(user_id=sekretaris['user'].id)
+        sekretaris_instance = Sekretaris.objects.create(atasan=atasan, sekretaris=sekretaris_obj, **validated_data)
+        return sekretaris_instance
+
+    def update(self, instance, validated_data):
+        try:
+            print("instance:",instance)
+            print("validated_data:",validated_data)
+            instance.status = validated_data['status']
+            instance.sifat = validated_data['sifat']
+            instance.hak_sekretaris = validated_data['hak_sekretaris']
+            instance.save()
+            return instance
+        except KeyError as e:
+            raise ValidationError(str(e))
+
+    def delete(self):
+        instance = self.instance
+        if instance:
+            # instance.delete()
+            print("HADEH:", instance)
+            return instance
 
 
 

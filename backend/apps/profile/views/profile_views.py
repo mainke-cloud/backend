@@ -1,5 +1,5 @@
 from rest_framework import generics
-from apps.profile.models import Profile
+from apps.profile.models import *
 from apps.profile.serializers.serializers_profile import *
 from apps.profile.views.auth_views import IsAuthenticatedAndTokenExists
 from rest_framework.response import Response
@@ -21,12 +21,6 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
         elif id_jabatan :
             queryset = queryset.filter(jabatan_id = id_jabatan)
         return queryset
-
-
-    # def get_object(self):
-    #     logged_user = self.request.COOKIES.get('id')
-    #     profile = Profile.objects.get(user__id=logged_user)
-    #     return profile
     
     def post(self, request):
         serializer = ProfileSerializer(data=request.data, context={'request': request})
@@ -34,7 +28,7 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
         serializer.save()
         return Response(serializer.data)
 
-class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateDestroyAPIView):
+class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     lookup_field = 'user_id'
     
@@ -45,20 +39,53 @@ class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateDestroyAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()  
-        serializer = self.get_serializer(instance, data=request.data, partial=True) 
+        serializer = self.get_serializer(instance, data=request.data, partial=True, context={'request': request}) 
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+        
+class SekretarisListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = SekretarisSerializer
+
+    def get_queryset(self):
+        id_user = self.request.query_params.get('id_user')
+        profile = Profile.objects.get(user_id=id_user)
+        queryset = Sekretaris.objects.all()
+        if profile :
+            queryset = queryset.filter(atasan_id = profile.id)
+        print("Query: ",queryset)
+        return queryset
+    
+    def post(self, request):
+        serializer = SekretarisSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
 
+class SekretarisUpdateRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = SekretarisSerializer
+    queryset = Sekretaris.objects.all()
+    # lookup_field = 'atasan_id'
 
-    # def get_object(self):
-    #     logged_user = self.request.COOKIES.get('id')
-    #     profile = Profile.objects.get(user__id=logged_user)
-    #     return profile
+    # def get_queryset(self):
+    #     id_atasan = self.kwargs['atasan_id']
+    #     id_sekretaris = self.kwargs['sekretaris_id']        
+    #     try:
+    #         queryset = Sekretaris.objects.filter(atasan_id=id_atasan, sekretaris_id=id_sekretaris)
+    #     except Sekretaris.DoesNotExist:
+    #         queryset = None
+    #     print("DAJAHh: ",queryset)
+    #     return queryset
 
-    # def update(self, request, *args, **kwargs):
-    #     profile = self.get_object()
-    #     serializer = ProfileSerializer(profile, data=request.data)
-    #     serializer.is_valid(raise_exception=True)
-    #     serializer.save()
-    #     return Response(serializer.data)
+    def get_object(self):
+        id_atasan = self.kwargs['atasan_id']
+        id_sekretaris = self.kwargs['sekretaris_id']   
+        obj = Sekretaris.objects.get(atasan_id=id_atasan, sekretaris_id=id_sekretaris)
+        return obj
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()  
+        serializer = self.get_serializer(instance, data=request.data, partial=True, context={'request': request}) 
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)

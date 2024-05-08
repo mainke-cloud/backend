@@ -3,15 +3,6 @@ from apps.departemen.models import Departemen
 from apps.jabatan.models import Jabatan
 from django.contrib.auth.models import User
 
-class Sekretaris(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    status = models.CharField(max_length=50, null=True, default=None)
-    sifat = models.CharField(max_length=50, null=True, default=None)
-    hak_sekretaris = models.CharField(max_length=50, null=True, default=None)
-
-    def __str__(self):
-        return f"{self.user.profile.nama_lengkap} ({self.status})"
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nama_lengkap = models.CharField(max_length=50, default="-")
@@ -24,8 +15,18 @@ class Profile(models.Model):
     nik_lokal = models.CharField(max_length=20, default="-")
     organisasi = models.CharField(max_length=100, default="-")
     is_first_login = models.BooleanField(default=True)
-    sekretaris = models.ManyToManyField(Sekretaris, blank=True, symmetrical=False, related_name='sekretaris_karyawan')
 
     def __str__(self):
         return f"{self.nama_lengkap}" 
+
+class Sekretaris(models.Model):
+    id = models.AutoField(primary_key=True)
+    atasan = models.ForeignKey(Profile, related_name='sekretaris_atasan', on_delete=models.CASCADE)
+    sekretaris = models.ForeignKey(Profile, related_name='sekretaris_bawahan', on_delete=models.CASCADE)
+    status = models.CharField(max_length=50, null=True, default=None)
+    sifat = models.CharField(max_length=50, null=True, default=None)
+    hak_sekretaris = models.CharField(max_length=50, null=True, default=None)
+
+    def __str__(self):
+        return f"{self.sekretaris.nama_lengkap} ({self.status})"
 
