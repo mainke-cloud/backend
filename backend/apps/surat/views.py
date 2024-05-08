@@ -8,13 +8,23 @@ class SuratListCreateView(generics.ListCreateAPIView):
     queryset = Surat.objects.all()
     serializer_class = SuratSerializer
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs): 
         #user = request.user
         #serializer = self.get_serializer(data= request.data, context={'user':user})
         serializer = self.get_serializer(data= request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+    
+    def get_queryset(self):
+        queryset = Surat.objects.all()
+        status = self.request.query_params.get('status', None)
+        kategori = self.request.query_params.get('kategori', None)
+        if status is not None:
+            queryset = queryset.filter(status=status)
+        if kategori is not None:
+            queryset = queryset.filter(kategori=kategori)
+        return queryset
     
 class SuratRetrieveUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Surat.objects.all()
