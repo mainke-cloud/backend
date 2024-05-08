@@ -21,7 +21,7 @@ class SuratSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Surat
-        fields = ['id','pembuat','penerima','penerima_detail','penyetuju','penyetuju_detail', 'no_agenda', 'no_surat', 'perihal', 'status', 'kategori', 'urgensi', 'tanggal_pengiriman','lampiran_detail','lampiran','file_surat', 'log']
+        fields = ['id','pembuat','penerima','penerima_detail','penyetuju','penyetuju_detail', 'no_agenda', 'no_surat', 'perihal', 'status', 'kategori', 'urgensi', 'tanggal_pengiriman','isi_surat','lampiran_detail','lampiran','file_surat', 'log']
         extra_kwargs = {'lampiran': {'write_only': True}}
 
 

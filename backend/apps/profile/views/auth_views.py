@@ -46,10 +46,10 @@ class RegisterView(APIView):
 
 class LoginView(APIView):
     def post(self, request):
-        email = request.data['email']
+        username = request.data['username']
         password = request.data['password']
 
-        user = User.objects.filter(email=email).first()
+        user = User.objects.filter(username=username).first()
 
         if user is None:
             raise AuthenticationFailed('User Not Found!')
@@ -65,11 +65,12 @@ class LoginView(APIView):
 
         token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
         response = Response()
-        response.set_cookie(key='jwt', value=token, httponly=True)
-        response.set_cookie(key='id', value=user.id, httponly=True)
+        # response.set_cookie(key='jwt', value=token, httponly=True)
+        # response.set_cookie(key='id', value=user.id, httponly=True)
         response.data = {
             'message': 'Login Success!',
-            "jwt" : token
+            "jwt" : token,
+            "id": user.id
         }
 
         return response
@@ -78,6 +79,7 @@ class LogoutView(APIView):
     def post(self, request):
         response = Response()
         response.delete_cookie('jwt')
+        response.delete_cookie('id')
         response.data = {
             'message': 'Logout Success!'
         }

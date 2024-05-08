@@ -1,48 +1,78 @@
 from rest_framework import serializers
 from apps.profile.models import Profile
 from django.contrib.auth.models import User
+from apps.departemen.models import Departemen
+from apps.jabatan.models import Jabatan
+from apps.departemen.serializers import DepartemenSerializer
+from apps.jabatan.serializers import JabatanSerializer
 
 class UserSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(source='user.username', read_only=True)
     class Meta:
-        model = User
-        fields = ['id', 'email','date_joined','last_login']
-        extra_kwargs = {'email': {'read_only': True},
-                    'date_joined': {'read_only': True},
-                    'last_login': {'read_only': True}}
+        model = Profile
+        fields = ['user_id','username','nama_lengkap']
+        extra_kwargs = {'user': {'write_only': True}}
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user_id = serializers.PrimaryKeyRelatedField(source='user',read_only=True)    
-    nama_lengkap = serializers.SerializerMethodField(read_only=True)
-    email = serializers.SerializerMethodField(read_only=True)
+    user_id = serializers.PrimaryKeyRelatedField(source='user',read_only=True)
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.EmailField(source='user.email', required=False)
+    departemen_detail = DepartemenSerializer(source='departemen', read_only=True)
+    jabatan_detail = JabatanSerializer(source='jabatan', read_only=True)
 
-    def get_nama_lengkap(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}"
-
-    def get_email(self, obj):
-        return f"{obj.user.email}"
+    # sekretaris_detail = UserSerializer(source='sekretaris', read_only=True,many=True)
+    # status, sifat, hak sekretaris
         
     class Meta:
         model = Profile
-        fields = ['user_id','nama_lengkap', 'alamat', 'email', 'kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi']
-    
-    def create(self, validated_data):
-        logged_user = self.context['request'].COOKIES.get('email')
-        user = User.objects.get(email=logged_user)
-        profile = Profile.objects.create(user=user, **validated_data)
+        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap']
+        extra_kwargs = {
+        'departemen': {'write_only': True},
+        'jabatan': {'write_only': True},
+        # 'sekretaris': {'write_only': True},
+        'user': {'write_only': True},
+        }
+
+    def create(self, validated_data):    
+        user = validated_data.pop('user', None)
+        id_user = self.context['request'].query_params.get('id_user')
+        user_data = User.objects.get(id=id_user)
+        
+        email = self.context['request'].data.get('email', []) 
+        if email:  
+            user_data.email = email
+            user_data.save()
+        profile = Profile.objects.create(user=user_data, **validated_data)
         return profile
 
+
     def update(self, instance, validated_data):
-        user = validated_data.pop('user', None)
-        if user:
-            instance.user = user
+        user_data = validated_data.pop('user', None)
+        if user_data:
+            user = instance.user
+            email = user_data.get('email', None)
+            if email is not None and email != user.email:
+                user.email = email
+                user.save()
+
+        # Update departemen, jabatan, dan sekretaris
+        instance.departemen = validated_data.get('departemen', instance.departemen)
+        instance.jabatan = validated_data.get('jabatan', instance.jabatan)
+        # instance.sekretaris.set(validated_data.get('sekretaris', instance.sekretaris.all()))
+
+        # Update field lainnya
         instance.alamat = validated_data.get('alamat', instance.alamat)
         instance.kota = validated_data.get('kota', instance.kota)
         instance.phone_number = validated_data.get('phone_number', instance.phone_number)
         instance.nik_group = validated_data.get('nik_group', instance.nik_group)
         instance.nik_lokal = validated_data.get('nik_lokal', instance.nik_lokal)
         instance.organisasi = validated_data.get('organisasi', instance.organisasi)
+        instance.nama_lengkap = validated_data.get('nama_lengkap', instance.nama_lengkap)
+        instance.is_first_login = validated_data.get('is_first_login', instance.is_first_login)
+
         instance.save()
         return instance
+
 
 
 
