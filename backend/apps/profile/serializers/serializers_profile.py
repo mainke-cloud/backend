@@ -20,31 +20,31 @@ class ProfileSerializer(serializers.ModelSerializer):
     departemen_detail = DepartemenSerializer(source='departemen', read_only=True)
     jabatan_detail = JabatanSerializer(source='jabatan', read_only=True)
 
-    sekretaris_detail = UserSerializer(source='sekretaris', read_only=True,many=True)
+    # sekretaris_detail = UserSerializer(source='sekretaris', read_only=True,many=True)
     # status, sifat, hak sekretaris
-
-    
-    # def get_user(self, obj):
-    #     logged_user = self.context['request'].COOKIES.get('id')
-    #     user = User.objects.get(pk=logged_user)
-    #     return user
         
     class Meta:
         model = Profile
-        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap','sekretaris','sekretaris_detail']
+        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap']
         extra_kwargs = {
         'departemen': {'write_only': True},
         'jabatan': {'write_only': True},
-        'sekretaris': {'write_only': True},
+        # 'sekretaris': {'write_only': True},
         'user': {'write_only': True},
         }
 
-    def create(self, validated_data):
-        email = validated_data.pop('email', None)
+    def create(self, validated_data):    
+        user = validated_data.pop('user', None)
         id_user = self.context['request'].query_params.get('id_user')
-        user_data = User.objects.get(id = id_user)
-        profile = Profile.objects.create(user = user_data, **validated_data)
+        user_data = User.objects.get(id=id_user)
+        
+        email = self.context['request'].data.get('email', []) 
+        if email:  
+            user_data.email = email
+            user_data.save()
+        profile = Profile.objects.create(user=user_data, **validated_data)
         return profile
+
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop('user', None)
@@ -58,7 +58,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         # Update departemen, jabatan, dan sekretaris
         instance.departemen = validated_data.get('departemen', instance.departemen)
         instance.jabatan = validated_data.get('jabatan', instance.jabatan)
-        instance.sekretaris.set(validated_data.get('sekretaris', instance.sekretaris.all()))
+        # instance.sekretaris.set(validated_data.get('sekretaris', instance.sekretaris.all()))
 
         # Update field lainnya
         instance.alamat = validated_data.get('alamat', instance.alamat)
