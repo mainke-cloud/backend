@@ -53,7 +53,6 @@ class SekretarisListCreateAPIView(generics.ListCreateAPIView):
         queryset = Sekretaris.objects.all()
         if profile :
             queryset = queryset.filter(atasan_id = profile.id)
-        print("Query: ",queryset)
         return queryset
     
     def post(self, request):
@@ -66,6 +65,7 @@ class SekretarisUpdateRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
     serializer_class = SekretarisSerializer
     queryset = Sekretaris.objects.all()
     # lookup_field = 'atasan_id'
+    # lookup_url_kwarg = ('atasan_id', 'sekretaris_id')
 
     # def get_queryset(self):
     #     id_atasan = self.kwargs['atasan_id']
@@ -77,15 +77,15 @@ class SekretarisUpdateRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
     #     print("DAJAHh: ",queryset)
     #     return queryset
 
-    def get_object(self):
-        id_atasan = self.kwargs['atasan_id']
-        id_sekretaris = self.kwargs['sekretaris_id']   
-        obj = Sekretaris.objects.get(atasan_id=id_atasan, sekretaris_id=id_sekretaris)
-        return obj
+    # def get_object(self):
+    #     id_atasan = self.kwargs['atasan_id']
+    #     id_sekretaris = self.kwargs['sekretaris_id']   
+    #     obj = Sekretaris.objects.get(atasan_id=id_atasan, sekretaris_id=id_sekretaris)
+    #     return obj
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()  
-        serializer = self.get_serializer(instance, data=request.data, partial=True, context={'request': request}) 
+        serializer = self.get_serializer(instance, data=request.data, partial=True) 
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)

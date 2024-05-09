@@ -78,9 +78,10 @@ class ProfileSerializer(serializers.ModelSerializer):
 class SekretarisSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(source='sekretaris.user', queryset=User.objects.all())
     username = serializers.ReadOnlyField(source='sekretaris.user.username')
+    nama_lengkap = serializers.ReadOnlyField(source='sekretaris.nama_lengkap')
     class Meta:
         model = Sekretaris
-        fields = ('user_id','username','status', 'sifat', 'hak_sekretaris')
+        fields = ('user_id','username','nama_lengkap','status', 'sifat', 'hak_sekretaris')
 
     def create(self, validated_data):
         id_user = self.context['request'].query_params.get('id_user')
@@ -92,22 +93,13 @@ class SekretarisSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         try:
-            print("instance:",instance)
+            print("instance1:",instance)
             print("validated_data:",validated_data)
             instance.status = validated_data['status']
             instance.sifat = validated_data['sifat']
             instance.hak_sekretaris = validated_data['hak_sekretaris']
+            print("instance2:",instance)
             instance.save()
             return instance
         except KeyError as e:
             raise ValidationError(str(e))
-
-    def delete(self):
-        instance = self.instance
-        if instance:
-            # instance.delete()
-            print("HADEH:", instance)
-            return instance
-
-
-

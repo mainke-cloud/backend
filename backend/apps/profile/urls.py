@@ -8,5 +8,8 @@ urlpatterns = [
     path("update/<user_id>/", ProfileUpdateRetrieveAPIView.as_view(), name="profile-update"),
 
     path("sekretaris/", SekretarisListCreateAPIView.as_view(), name="sekretaris-list-create"), # filter by id_user atasan
-    path("sekretaris/details/<atasan_id>/<sekretaris_id>/", SekretarisUpdateRetrieveDestroyAPIView.as_view(), name="sekretaris-update-retrieve-destroy")
+
+    path("sekretaris/update/<int:pk>/", SekretarisUpdateRetrieveDestroyAPIView.as_view(), name="sekretaris-update"),
+    path("sekretaris/details/<int:pk>/", SekretarisUpdateRetrieveDestroyAPIView.as_view(), name="sekretaris-retrieve"),
+    path("sekretaris/delete/<int:pk>/", SekretarisUpdateRetrieveDestroyAPIView.as_view(), name="sekretaris-destroy"),
 ]

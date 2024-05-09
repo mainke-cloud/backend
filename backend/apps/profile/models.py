@@ -20,7 +20,6 @@ class Profile(models.Model):
         return f"{self.nama_lengkap}" 
 
 class Sekretaris(models.Model):
-    id = models.AutoField(primary_key=True)
     atasan = models.ForeignKey(Profile, related_name='sekretaris_atasan', on_delete=models.CASCADE)
     sekretaris = models.ForeignKey(Profile, related_name='sekretaris_bawahan', on_delete=models.CASCADE)
     status = models.CharField(max_length=50, null=True, default=None)
