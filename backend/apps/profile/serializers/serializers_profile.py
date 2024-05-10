@@ -20,20 +20,25 @@ class ProfileSerializer(serializers.ModelSerializer):
     departemen_detail = DepartemenSerializer(source='departemen', read_only=True)
     jabatan_detail = JabatanSerializer(source='jabatan', read_only=True)
     my_sekretaris = serializers.SerializerMethodField()
+    my_delegasi = serializers.SerializerMethodField()
         
     class Meta:
         model = Profile
-        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap','my_sekretaris']
+        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap','my_sekretaris','my_delegasi']
         extra_kwargs = {
         'departemen': {'write_only': True},
         'jabatan': {'write_only': True},
         'user': {'write_only': True},
         'sekretaris': {'write_only': True},
+        'delegasi': {'write_only': True},
         }
     
     def get_my_sekretaris(self, obj):
         sekretaris = Sekretaris.objects.filter(atasan=obj)
         return SekretarisSerializer(sekretaris, many=True).data
+    def get_my_delegasi(self, obj):
+        delegasi = Delegasi.objects.filter(atasan=obj)
+        return DelegasiSerializer(delegasi, many=True).data
 
     def create(self, validated_data):    
         user = validated_data.pop('user', None)
@@ -81,7 +86,7 @@ class SekretarisSerializer(serializers.ModelSerializer):
     nama_lengkap = serializers.ReadOnlyField(source='sekretaris.nama_lengkap')
     class Meta:
         model = Sekretaris
-        fields = ('user_id','username','nama_lengkap','status', 'sifat', 'hak_sekretaris')
+        fields = ('user_id','username','nama_lengkap','status', 'sifat', 'hak_sekretaris','tgl_pembuatan')
 
     def create(self, validated_data):
         id_user = self.context['request'].query_params.get('id_user')
@@ -93,12 +98,35 @@ class SekretarisSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         try:
-            print("instance1:",instance)
-            print("validated_data:",validated_data)
             instance.status = validated_data['status']
             instance.sifat = validated_data['sifat']
             instance.hak_sekretaris = validated_data['hak_sekretaris']
-            print("instance2:",instance)
+            instance.tgl_pembuatan = validated_data['tgl_pembuatan']
+            instance.save()
+            return instance
+        except KeyError as e:
+            raise ValidationError(str(e))
+
+class DelegasiSerializer(serializers.ModelSerializer):
+    user_id = serializers.PrimaryKeyRelatedField(source='delegasi.user', queryset=User.objects.all())
+    username = serializers.ReadOnlyField(source='delegasi.user.username')
+    nama_lengkap = serializers.ReadOnlyField(source='delegasi.nama_lengkap')
+    class Meta:
+        model = Delegasi
+        fields = ('user_id','username','nama_lengkap','tgl_aktif', 'tgl_berakhir')
+
+    def create(self, validated_data):
+        id_user = self.context['request'].query_params.get('id_user')
+        atasan = Profile.objects.get(user_id=id_user)
+        delegasi = validated_data.pop('delegasi', None)
+        delegasi_obj = Profile.objects.get(user_id=delegasi['user'].id)
+        delegasi_instance = Delegasi.objects.create(atasan=atasan, delegasi=delegasi_obj, **validated_data)
+        return delegasi_instance
+
+    def update(self, instance, validated_data):
+        try:
+            instance.tgl_aktif = validated_data['tgl_aktif']
+            instance.tgl_berakhir = validated_data['tgl_berakhir']
             instance.save()
             return instance
         except KeyError as e:

@@ -64,24 +64,35 @@ class SekretarisListCreateAPIView(generics.ListCreateAPIView):
 class SekretarisUpdateRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SekretarisSerializer
     queryset = Sekretaris.objects.all()
-    # lookup_field = 'atasan_id'
-    # lookup_url_kwarg = ('atasan_id', 'sekretaris_id')
 
-    # def get_queryset(self):
-    #     id_atasan = self.kwargs['atasan_id']
-    #     id_sekretaris = self.kwargs['sekretaris_id']        
-    #     try:
-    #         queryset = Sekretaris.objects.filter(atasan_id=id_atasan, sekretaris_id=id_sekretaris)
-    #     except Sekretaris.DoesNotExist:
-    #         queryset = None
-    #     print("DAJAHh: ",queryset)
-    #     return queryset
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()  
+        serializer = self.get_serializer(instance, data=request.data, partial=True) 
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
 
-    # def get_object(self):
-    #     id_atasan = self.kwargs['atasan_id']
-    #     id_sekretaris = self.kwargs['sekretaris_id']   
-    #     obj = Sekretaris.objects.get(atasan_id=id_atasan, sekretaris_id=id_sekretaris)
-    #     return obj
+class DelegasiListCreateAPIView(generics.ListCreateAPIView):
+    serializer_class = DelegasiSerializer
+
+    def get_queryset(self):
+        id_user = self.request.query_params.get('id_user')
+        profile = Profile.objects.get(user_id=id_user)
+        queryset = Delegasi.objects.all()
+        print("BAMABNG: ", queryset)
+        if profile :
+            queryset = queryset.filter(atasan_id = profile.id)
+        return queryset
+    
+    def post(self, request):
+        serializer = DelegasiSerializer(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+class DelegasiUpdateRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = DelegasiSerializer
+    queryset = Delegasi.objects.all()
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()  
