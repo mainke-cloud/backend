@@ -86,7 +86,7 @@ class SekretarisSerializer(serializers.ModelSerializer):
     nama_lengkap = serializers.ReadOnlyField(source='sekretaris.nama_lengkap')
     class Meta:
         model = Sekretaris
-        fields = ('user_id','username','nama_lengkap','status', 'sifat', 'hak_sekretaris','tgl_pembuatan')
+        fields = ('id','user_id','username','nama_lengkap','status', 'sifat', 'hak_sekretaris','tgl_pembuatan')
 
     def create(self, validated_data):
         id_user = self.context['request'].query_params.get('id_user')
@@ -113,7 +113,7 @@ class DelegasiSerializer(serializers.ModelSerializer):
     nama_lengkap = serializers.ReadOnlyField(source='delegasi.nama_lengkap')
     class Meta:
         model = Delegasi
-        fields = ('user_id','username','nama_lengkap','tgl_aktif', 'tgl_berakhir')
+        fields = ('id','user_id','username','nama_lengkap','tgl_aktif', 'tgl_berakhir')
 
     def create(self, validated_data):
         id_user = self.context['request'].query_params.get('id_user')

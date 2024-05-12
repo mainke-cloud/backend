@@ -79,7 +79,6 @@ class DelegasiListCreateAPIView(generics.ListCreateAPIView):
         id_user = self.request.query_params.get('id_user')
         profile = Profile.objects.get(user_id=id_user)
         queryset = Delegasi.objects.all()
-        print("BAMABNG: ", queryset)
         if profile :
             queryset = queryset.filter(atasan_id = profile.id)
         return queryset
