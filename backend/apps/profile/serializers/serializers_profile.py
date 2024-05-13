@@ -115,7 +115,7 @@ class DelegasiSerializer(serializers.ModelSerializer):
     nama_jabatan = serializers.ReadOnlyField(source='delegasi.jabatan.nama_jabatan')
     class Meta:
         model = Delegasi
-        fields = ('user_id','username','nama_lengkap','tgl_aktif', 'tgl_berakhir','nama_jabatan')
+        fields = ('user_id','username','nama_lengkap','nama_jabatan','tgl_aktif', 'tgl_berakhir','disetujui')
 
     def create(self, validated_data):
         id_user = self.context['request'].query_params.get('id_user')
@@ -129,6 +129,7 @@ class DelegasiSerializer(serializers.ModelSerializer):
         try:
             instance.tgl_aktif = validated_data['tgl_aktif']
             instance.tgl_berakhir = validated_data['tgl_berakhir']
+            instance.disetujui = validated_data['disetujui']
             instance.save()
             return instance
         except KeyError as e:

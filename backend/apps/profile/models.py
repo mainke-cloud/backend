@@ -36,6 +36,7 @@ class Delegasi(models.Model):
     delegasi = models.ForeignKey(Profile, related_name='delegasi_bawahan', on_delete=models.CASCADE)
     tgl_aktif = models.DateField()
     tgl_berakhir = models.DateField()
+    disetujui = models.BooleanField(default=False)
 
     def status(self):
         if self.tgl_berakhir >= timezone.now().date():
