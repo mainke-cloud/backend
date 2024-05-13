@@ -12,3 +12,4 @@ config/local_settings.py
 local/*
 db.sqlite3
 mp/local_settings.py
+event_files/
