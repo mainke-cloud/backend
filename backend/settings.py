@@ -90,6 +90,7 @@ DATABASES = {
                 'username': os.environ.get("DB_USERNAME", False),
                 'password': os.environ.get("DB_PASSWORD", False),
                 'authSource': os.environ.get("DB_AUTHSOURCE", False),
+                'authMechanism': os.environ.get("DB_AUTHMECHANISM", "SCRAM-SHA-1"),
         },
     }
 }
