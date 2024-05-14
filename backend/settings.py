@@ -87,13 +87,17 @@ DATABASES = {
 	'CLIENT': {
                 'host': os.environ.get("DB_HOST", "127.0.0.1"),
                 'port': os.environ.get("DB_PORT", 27017),
-                'username': os.environ.get("DB_USERNAME", False),
-                'password': os.environ.get("DB_PASSWORD", False),
-                'authSource': os.environ.get("DB_AUTHSOURCE", False),
-                'authMechanism': os.environ.get("DB_AUTHMECHANISM", "SCRAM-SHA-1"),
         },
     }
 }
+
+if os.environ.get("DB_USE_AUTH"):
+    DATABASES['default']['CLIENT'].update({
+                'username': os.environ.get("DB_USERNAME", "admin"),
+                'password': os.environ.get("DB_PASSWORD", "admin"),
+                'authSource': os.environ.get("DB_AUTHSOURCE", "$external"),
+                'authMechanism': os.environ.get("DB_AUTHMECHANISM", "SCRAM-SHA-1"),
+    })
 
 
 # Password validation
