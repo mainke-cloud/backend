@@ -1,20 +1,19 @@
 from django.core.management.base import BaseCommand
-from apps.divisi.models import Divisi
-from apps.divisi.serializers import DivisiSerializer
+from django.contrib.auth.models import User
 
 class Command(BaseCommand):
     help = 'Seed divisi data'
 
     def handle(self, *args, **kwargs):
         data_to_add = [
-            {'nama_divisi': 'IT'},
-            {'nama_divisi': 'HR'},
-            {'nama_divisi': 'PR'},
+            {'username': 'nadip','password': 'nadip123','email': 'nadip@gmail.com'},
+            {'username': 'nopal','password': 'nopal123','email': 'nopal@gmail.com'},
+            {'username': 'jalu','password': 'jalu123','email': 'jalu@gmail.com'},
         ]
+        for data in data_to_add:
+            username = data.get('username')
+            password = data.get('password')
+            email = data.get('email')
 
-        serializer = DivisiSerializer(data=data_to_add, many=True)
-        if serializer.is_valid():
-            Divisi.objects.bulk_create([Divisi(**item) for item in serializer.validated_data])
-            self.stdout.write(self.style.SUCCESS('Data Divisi berhasil ditambahkan secara massal.'))
-        else:
-            self.stdout.write(self.style.ERROR(f"Error: {serializer.errors}"))
+            user = User.objects.create_user(username=username, password=password, email=email)
+            self.stdout.write(self.style.SUCCESS(f"User '{username}' berhasil ditambahkan"))
