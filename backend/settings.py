@@ -86,6 +86,10 @@ DATABASES = {
         "NAME": os.environ.get("DB_NAME", "ndecoffis"),
 	'CLIENT': {
                 'host': os.environ.get("DB_HOST", "127.0.0.1"),
+                'port': os.environ.get("DB_PORT", 27017),
+                'username': os.environ.get("DB_USERNAME", False),
+                'password': os.environ.get("DB_PASSWORD", False),
+                'authSource': os.environ.get("DB_AUTHSOURCE", False),
         },
     }
 }
