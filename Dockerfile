@@ -5,7 +5,7 @@ ENV APP_HOME=/app
 WORKDIR $APP_HOME
 
 RUN apt-get update && \
-    apt-get install -y cron && \
+    apt-get install -y cron tmux vim && \
     apt-get clean
 
 ENV PYTHONDONTWRITEBYTECODE 1
