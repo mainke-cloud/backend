@@ -6,11 +6,8 @@ from apps.profile.models import Profile
 from apps.divisi.serializers import DivisiSerializer
 
 class GroupSerializer(serializers.ModelSerializer):
-    # person_detail = UserSerializer(source='person', read_only=True,many=True)
-
     person_detail = serializers.SerializerMethodField()
     divisi_detail = DivisiSerializer(source='divisi', read_only=True)
-
 
     class Meta:
         model = Group

@@ -39,6 +39,11 @@ class IsAuthenticatedAndTokenExists(permissions.BasePermission):
 
 class RegisterView(APIView):
     def post(self, request):
+        username = request.data['username']
+        user = User.objects.filter(username=username).first()
+        if user :
+            raise AuthenticationFailed('User is already!')
+
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -65,7 +70,7 @@ class LoginView(APIView):
 
         token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
         response = Response()
-        # response.set_cookie(key='jwt', value=token, httponly=True)
+        # response.set_cookie(key='jwt', value=token, httponly=True) // token di set di sessions (Frontend)
         # response.set_cookie(key='id', value=user.id, httponly=True)
         response.data = {
             'message': 'Login Success!',

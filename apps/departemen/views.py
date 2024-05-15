@@ -15,7 +15,6 @@ class DepartemenListCreateAPIView(generics.ListCreateAPIView):
         return queryset
 
 class DepartemenRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
-    # queryset = Departemen.objects.all()
     serializer_class = DepartemenSerializer
     def get_queryset(self):
         id_divisi = self.request.query_params.get('id_divisi')

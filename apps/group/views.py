@@ -9,8 +9,6 @@ class GroupListCreateView(generics.ListCreateAPIView):
     serializer_class = GroupSerializer
 
     def create(self, request, *args, **kwargs):
-        #user = request.user
-        #serializer = self.get_serializer(data= request.data, context={'user':user})
         serializer = self.get_serializer(data= request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()

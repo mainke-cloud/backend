@@ -115,7 +115,7 @@ class DelegasiSerializer(serializers.ModelSerializer):
     nama_jabatan = serializers.ReadOnlyField(source='delegasi.jabatan.nama_jabatan')
     class Meta:
         model = Delegasi
-        fields = ('user_id','username','nama_lengkap','nama_jabatan','tgl_aktif', 'tgl_berakhir','disetujui')
+        fields = ('id','user_id','username','nama_lengkap','nama_jabatan','tgl_aktif', 'tgl_berakhir','disetujui')
 
     def create(self, validated_data):
         id_user = self.context['request'].query_params.get('id_user')

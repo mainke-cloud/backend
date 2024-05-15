@@ -12,4 +12,3 @@ class DivisiRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Divisi.objects.all()
     serializer_class = DivisiSerializer
     # permission_classes = [IsAuthenticatedAndTokenExists]
-    # lookup_field = 'id_divisi'
