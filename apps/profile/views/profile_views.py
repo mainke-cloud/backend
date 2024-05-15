@@ -4,6 +4,7 @@ from apps.profile.serializers.serializers_profile import *
 from apps.profile.views.auth_views import IsAuthenticatedAndTokenExists
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+from rest_framework.exceptions import NotFound
 
 
 class ProfileListCreateAPIView(generics.ListCreateAPIView):
@@ -20,6 +21,10 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
             queryset = queryset.filter(departemen_id = id_departemen)
         elif id_jabatan :
             queryset = queryset.filter(jabatan_id = id_jabatan)
+        
+
+        if not queryset:
+            raise NotFound("User not found!")
         return queryset
     
     def post(self, request):
@@ -49,10 +54,14 @@ class SekretarisListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         id_user = self.request.query_params.get('id_user')
-        profile = Profile.objects.get(user_id=id_user)
+        try:
+            profile = Profile.objects.get(user_id=id_user)
+        except Profile.DoesNotExist:
+            raise NotFound("User not found!")
+
         queryset = Sekretaris.objects.all()
-        if profile :
-            queryset = queryset.filter(atasan_id = profile.id)
+        if profile:
+            queryset = queryset.filter(atasan_id=profile.id)
         return queryset
     
     def post(self, request):
@@ -77,7 +86,12 @@ class DelegasiListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         id_user = self.request.query_params.get('id_user')
-        profile = Profile.objects.get(user_id=id_user)
+
+        try:
+            profile = Profile.objects.get(user_id=id_user)
+        except Profile.DoesNotExist:
+            raise NotFound("User not found!")
+
         queryset = Delegasi.objects.all()
         if profile :
             queryset = queryset.filter(atasan_id = profile.id)
