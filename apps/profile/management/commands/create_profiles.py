@@ -9,9 +9,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         data_to_add = [
-            {'user':19 ,'nama_lengkap': 'nadip abcd','alamat': 'Jl Tikus no 1','kota': 'Kota Bandung','phone_number': '081274712','nik_group': '52512','nik_lokal': '95827','organisasi': 'Telkom Indonesia','is_first_login': True,'departemen': 12,'jabatan': 1},
-            {'user':20 ,'nama_lengkap': 'nopal alga','alamat': 'Jl Kelinci no 2','kota': 'Kota Padang','phone_number': '081277264','nik_group': '56274','nik_lokal': '67242','organisasi': 'Pertamina','is_first_login': True,'departemen': 13,'jabatan': 2},
-            {'user':21 ,'nama_lengkap': 'jalu kawani','alamat': 'Jl Harimau no 3','kota': 'Kab. Ciwidey','phone_number': '081270285','nik_group': '12631','nik_lokal': '19582','organisasi': 'PT POS Indonesia','is_first_login': True,'departemen': 14,'jabatan': 3},
+            {'user':1 ,'nama_lengkap': 'nadip abcd','alamat': 'Jl Tikus no 1','kota': 'Kota Bandung','phone_number': '081274712','nik_group': '52512','nik_lokal': '95827','organisasi': 'Telkom Indonesia','is_first_login': True,'departemen': 1,'jabatan': 1},
+            {'user':2 ,'nama_lengkap': 'nopal alga','alamat': 'Jl Kelinci no 2','kota': 'Kota Padang','phone_number': '081277264','nik_group': '56274','nik_lokal': '67242','organisasi': 'Pertamina','is_first_login': True,'departemen': 4,'jabatan': 2},
+            {'user':3 ,'nama_lengkap': 'jalu kawani','alamat': 'Jl Harimau no 3','kota': 'Kab. Ciwidey','phone_number': '081270285','nik_group': '12631','nik_lokal': '19582','organisasi': 'PT POS Indonesia','is_first_login': True,'departemen': 7,'jabatan': 3},
         ]
         for data in data_to_add:
             user = data.get('user')
