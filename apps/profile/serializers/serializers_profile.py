@@ -5,6 +5,7 @@ from apps.departemen.models import Departemen
 from apps.jabatan.models import Jabatan
 from apps.departemen.serializers import DepartemenSerializer
 from apps.jabatan.serializers import JabatanSerializer
+from django.core.exceptions import ValidationError
 
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username', read_only=True)
@@ -74,7 +75,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.nik_lokal = validated_data.get('nik_lokal', instance.nik_lokal)
         instance.organisasi = validated_data.get('organisasi', instance.organisasi)
         instance.nama_lengkap = validated_data.get('nama_lengkap', instance.nama_lengkap)
-        instance.is_first_login = validated_data.get('is_first_login', instance.is_first_login)
+        instance.is_first_login = validated_data.get('is_first_login', False)
 
         instance.save()
         return instance
@@ -115,7 +116,7 @@ class DelegasiSerializer(serializers.ModelSerializer):
     nama_jabatan = serializers.ReadOnlyField(source='delegasi.jabatan.nama_jabatan')
     class Meta:
         model = Delegasi
-        fields = ('id','user_id','username','nama_lengkap','nama_jabatan','tgl_aktif', 'tgl_berakhir','disetujui')
+        fields = ('id','user_id','username','nama_lengkap','nama_jabatan','alasan','tgl_aktif', 'tgl_berakhir','disetujui','status')
 
     def create(self, validated_data):
         id_user = self.context['request'].query_params.get('id_user')
@@ -127,9 +128,10 @@ class DelegasiSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         try:
+            instance.disetujui = validated_data.get('disetujui', False)
             instance.tgl_aktif = validated_data['tgl_aktif']
             instance.tgl_berakhir = validated_data['tgl_berakhir']
-            instance.disetujui = validated_data['disetujui']
+            instance.alasan = validated_data['alasan']
             instance.save()
             return instance
         except KeyError as e:

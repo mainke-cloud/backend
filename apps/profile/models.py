@@ -34,6 +34,7 @@ class Sekretaris(models.Model):
 class Delegasi(models.Model): 
     atasan = models.ForeignKey(Profile, related_name='delegasi_atasan', on_delete=models.CASCADE)
     delegasi = models.ForeignKey(Profile, related_name='delegasi_bawahan', on_delete=models.CASCADE)
+    alasan = models.CharField(max_length=100, null=True, default="-")
     tgl_aktif = models.DateField()
     tgl_berakhir = models.DateField()
     disetujui = models.BooleanField(default=False)
