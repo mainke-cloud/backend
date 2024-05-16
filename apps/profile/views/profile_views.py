@@ -9,6 +9,7 @@ from rest_framework.exceptions import NotFound
 
 class ProfileListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ProfileSerializer
+    permission_classes = [IsAuthenticatedAndTokenExists]
 
     def get_queryset(self):
         id_user = self.request.query_params.get('id_user')
@@ -36,6 +37,7 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
 class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     lookup_field = 'user_id'
+    permission_classes = [IsAuthenticatedAndTokenExists]
     
     def get_queryset(self):
         id = self.kwargs[self.lookup_field]

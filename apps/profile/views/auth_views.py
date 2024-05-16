@@ -14,7 +14,8 @@ from django.conf import settings
 
 class IsAuthenticatedAndTokenExists(permissions.BasePermission):
     def has_permission(self, request, view):
-        token = request.COOKIES.get('jwt')
+        # token = request.COOKIES.get('jwt')
+        token = request.session.get('user')['jwt']
 
         if not token:
             return False
@@ -55,30 +56,30 @@ class LoginView(APIView):
         password = request.data['password']
 
         user = User.objects.filter(username=username).first()
+        
+        if user and user.check_password(password):
+            # Generate JWT token
+            payload = {
+                'id': user.id,
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=30),
+                'iat': datetime.datetime.utcnow()
+            }
+            token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
+            
+            # Save token and user id to session
+            request.session['user'] = {'id': user.id, 'jwt': token}
+            
+            # Create a response object
+            response = Response({
+                'message': 'Login successful',
+                'username': username,
+            })
 
-        if user is None:
-            raise AuthenticationFailed('User Not Found!')
-
-        if not user.check_password(password):
-            raise AuthenticationFailed("Incorect Password!")
-
-        payload = {
-            'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
-        }
-
-        token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-        response = Response()
-        # response.set_cookie(key='jwt', value=token, httponly=True) // token di set di sessions (Frontend)
-        # response.set_cookie(key='id', value=user.id, httponly=True)
-        response.data = {
-            'message': 'Login Success!',
-            "jwt" : token,
-            "id": user.id
-        }
-
-        return response
+            # print("TOKEN: ", request.session.get('user'))
+            
+            return response
+        else:
+            return Response({'message': 'Invalid credentials'}, status=400)
 
 class LogoutView(APIView):
     def post(self, request):
