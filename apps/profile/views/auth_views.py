@@ -72,7 +72,7 @@ class LoginView(APIView):
             
             # Create a response object
             response = Response({
-                'message': 'Login successful!',
+                'id': user.id,
                 'username': username,
                 'jwt': str(token.access_token)
             })
