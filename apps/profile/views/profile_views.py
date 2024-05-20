@@ -1,7 +1,6 @@
 from rest_framework import generics
 from apps.profile.models import *
 from apps.profile.serializers.serializers_profile import *
-from apps.profile.views.auth_views import IsAuthenticatedAndTokenExists
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework.exceptions import NotFound
@@ -36,7 +35,7 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
         serializer.save()
         return Response(serializer.data)
 
-class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateAPIView):
+class ProfileUpdateRetrieveAPIView(generics.UpdateAPIView):
     serializer_class = ProfileSerializer
     lookup_field = 'user_id'
     permission_classes = [IsAuthenticated]
