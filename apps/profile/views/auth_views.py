@@ -10,33 +10,35 @@ import jwt, datetime
 from datetime import datetime as dt
 from django.contrib.auth import authenticate
 from django.conf import settings
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.tokens import RefreshToken
 
 
-class IsAuthenticatedAndTokenExists(permissions.BasePermission):
-    def has_permission(self, request, view):
-        # token = request.COOKIES.get('jwt')
-        token = request.session.get('user')['jwt']
+# class IsAuthenticatedAndTokenExists(permissions.BasePermission):
+#     def has_permission(self, request, view):
+#         # token = request.COOKIES.get('jwt')
+#         token = request.session.get('user')['jwt']
 
-        if not token:
-            return False
+#         if not token:
+#             return False
 
-        try:
-            decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-            exp_timestamp = decoded_token.get('exp')
-            if exp_timestamp:
-                exp_datetime = dt.utcfromtimestamp(exp_timestamp).replace(tzinfo=None)
-                if exp_datetime < dt.utcnow():
-                    # Token sudah kadaluwarsa
-                    return False
-            else:
-                # Token tidak memiliki waktu kadaluarsa
-                return False
+#         try:
+#             decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
+#             exp_timestamp = decoded_token.get('exp')
+#             if exp_timestamp:
+#                 exp_datetime = dt.utcfromtimestamp(exp_timestamp).replace(tzinfo=None)
+#                 if exp_datetime < dt.utcnow():
+#                     # Token sudah kadaluwarsa
+#                     return False
+#             else:
+#                 # Token tidak memiliki waktu kadaluarsa
+#                 return False
             # Token valid dan belum kadaluwarsa
-            return True
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Token expired, please log in again.')
-        except jwt.InvalidTokenError:
-            raise AuthenticationFailed('Invalid token, please log in again.')
+        #     return True
+        # except jwt.ExpiredSignatureError:
+        #     raise AuthenticationFailed('Token expired, please log in again.')
+        # except jwt.InvalidTokenError:
+        #     raise AuthenticationFailed('Invalid token, please log in again.')
 
 class RegisterView(APIView):
     def post(self, request):
@@ -56,26 +58,24 @@ class LoginView(APIView):
         password = request.data['password']
 
         user = User.objects.filter(username=username).first()
+
+        token = RefreshToken.for_user(user)
         
         if user and user.check_password(password):
             # Generate JWT token
             payload = {
                 'id': user.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(seconds=30),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
                 'iat': datetime.datetime.utcnow()
             }
-            token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-            
-            # Save token and user id to session
-            request.session['user'] = {'id': user.id, 'jwt': token}
+            # token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
             
             # Create a response object
             response = Response({
-                'message': 'Login successful',
+                'message': 'Login successful!',
                 'username': username,
+                'jwt': str(token.access_token)
             })
-
-            # print("TOKEN: ", request.session.get('user'))
             
             return response
         else:

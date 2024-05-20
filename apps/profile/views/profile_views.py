@@ -5,11 +5,13 @@ from apps.profile.views.auth_views import IsAuthenticatedAndTokenExists
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated
+
 
 
 class ProfileListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticatedAndTokenExists]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         id_user = self.request.query_params.get('id_user')
@@ -37,7 +39,7 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
 class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = ProfileSerializer
     lookup_field = 'user_id'
-    permission_classes = [IsAuthenticatedAndTokenExists]
+    permission_classes = [IsAuthenticated]
     
     def get_queryset(self):
         id = self.kwargs[self.lookup_field]
@@ -53,6 +55,7 @@ class ProfileUpdateRetrieveAPIView(generics.RetrieveUpdateAPIView):
         
 class SekretarisListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = SekretarisSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         id_user = self.request.query_params.get('id_user')
@@ -75,6 +78,7 @@ class SekretarisListCreateAPIView(generics.ListCreateAPIView):
 class SekretarisUpdateRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SekretarisSerializer
     queryset = Sekretaris.objects.all()
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()  
@@ -85,6 +89,7 @@ class SekretarisUpdateRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIVi
 
 class DelegasiListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = DelegasiSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         id_user = self.request.query_params.get('id_user')
@@ -108,6 +113,7 @@ class DelegasiListCreateAPIView(generics.ListCreateAPIView):
 class DelegasiUpdateRetrieveDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DelegasiSerializer
     queryset = Delegasi.objects.all()
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()  
