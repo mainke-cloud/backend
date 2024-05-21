@@ -3,10 +3,12 @@ from rest_framework import status, generics
 from rest_framework.response import Response
 from .models import Surat, Disposisi
 from .serializers import SuratSerializer, DisposisiSerializer
+from rest_framework.permissions import IsAuthenticated
 
 class SuratListCreateView(generics.ListCreateAPIView):
     queryset = Surat.objects.all()
     serializer_class = SuratSerializer
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs): 
         #user = request.user
@@ -29,6 +31,7 @@ class SuratListCreateView(generics.ListCreateAPIView):
 class SuratRetrieveUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Surat.objects.all()
     serializer_class = SuratSerializer
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()  
@@ -40,6 +43,7 @@ class SuratRetrieveUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
 class DisposisiListCreateView(generics.ListCreateAPIView):
     queryset = Disposisi.objects.all()
     serializer_class = DisposisiSerializer
+    permission_classes = [IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
         #user = request.user
