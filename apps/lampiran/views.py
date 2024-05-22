@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 class LampiranListCreateView(generics.ListCreateAPIView):
     queryset = Lampiran.objects.all()  # Specify queryset for the view
     serializer_class = LampiranSerializer  # Specify serializer class for the view
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -25,7 +25,7 @@ class LampiranListCreateView(generics.ListCreateAPIView):
 class LampiranRetrieveUpdateDelete(generics.RetrieveUpdateDestroyAPIView):
     queryset = Lampiran.objects.all()
     serializer_class = LampiranSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()  

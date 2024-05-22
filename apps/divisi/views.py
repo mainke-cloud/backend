@@ -5,11 +5,19 @@ from rest_framework.permissions import IsAuthenticated
 
 
 class DivisiListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Divisi.objects.all()
     serializer_class = DivisiSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        id_departemen = self.request.query_params.get('id_departemen')
+        queryset = Departemen.objects.all()
+        if id_departemen :
+            queryset = queryset.filter(departemen_id = id_departemen)
+        if not queryset:
+            raise NotFound("No Departments found")
+        return queryset
 
 class DivisiRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Divisi.objects.all()
     serializer_class = DivisiSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]

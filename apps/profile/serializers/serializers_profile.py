@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from apps.profile.models import *
 from django.contrib.auth.models import User
-from apps.departemen.models import Departemen
+from apps.divisi.models import Divisi
 from apps.jabatan.models import Jabatan
-from apps.departemen.serializers import DepartemenSerializer
+from apps.divisi.serializers import DivisiSerializer
 from apps.jabatan.serializers import JabatanSerializer
 from django.core.exceptions import ValidationError
 
@@ -18,16 +18,16 @@ class ProfileSerializer(serializers.ModelSerializer):
     user_id = serializers.PrimaryKeyRelatedField(source='user',read_only=True)
     username = serializers.CharField(source='user.username', read_only=True)
     email = serializers.EmailField(source='user.email', required=False)
-    departemen_detail = DepartemenSerializer(source='departemen', read_only=True)
+    divisi_detail = DivisiSerializer(source='divisi', read_only=True)
     jabatan_detail = JabatanSerializer(source='jabatan', read_only=True)
     my_sekretaris = serializers.SerializerMethodField()
     my_delegasi = serializers.SerializerMethodField()
         
     class Meta:
         model = Profile
-        fields = ['user_id','username','email','nama_lengkap','departemen_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','departemen','jabatan','nama_lengkap','my_sekretaris','my_delegasi']
+        fields = ['user_id','username','email','nama_lengkap','divisi_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','divisi','jabatan','nama_lengkap','my_sekretaris','my_delegasi']
         extra_kwargs = {
-        'departemen': {'write_only': True},
+        'divisi': {'write_only': True},
         'jabatan': {'write_only': True},
         'user': {'write_only': True},
         'sekretaris': {'write_only': True},
@@ -64,8 +64,8 @@ class ProfileSerializer(serializers.ModelSerializer):
                 user.email = email
                 user.save()
 
-        # Update departemen, jabatan
-        instance.departemen = validated_data.get('departemen', instance.departemen)
+        # Update divisi, jabatan
+        instance.divisi = validated_data.get('divisi', instance.divisi)
         instance.jabatan = validated_data.get('jabatan', instance.jabatan)
         # Update field lainnya
         instance.alamat = validated_data.get('alamat', instance.alamat)
