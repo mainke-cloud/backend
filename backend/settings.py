@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'djongo',
     'pymongo',
     'corsheaders',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -159,3 +160,15 @@ MEDIA_URL = os.environ.get("MEDIA_URL", "media/")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+if os.environ.get("USE_MINIO"):
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+    AWS_ACCESS_KEY_ID = os.environ.get("MINIO_KEY", "miniadmin")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("MINIO_SECRET", "minion")
+    AWS_STORAGE_BUCKET_NAME = os.environ.get("MINIO_BUCKET", "coofis")
+    AWS_S3_ENDPOINT_URL = os.environ.get("MINIO_URL", "https://localhost/9000")  # Ganti dengan endpoint MinIO Anda
+    AWS_S3_REGION_NAME = 'us-east-1'
+    AWS_S3_SIGNATURE_VERSION = 's3v4'
+    AWS_S3_FILE_OVERWRITE = False
+    AWS_DEFAULT_ACL = None
