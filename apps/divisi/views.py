@@ -15,7 +15,7 @@ class DivisiListCreateAPIView(generics.ListCreateAPIView):
         if id_departemen :
             queryset = queryset.filter(departemen_id = id_departemen)
         if not queryset:
-            raise NotFound("No Departments found")
+            raise NotFound("Divisi not found!")
         return queryset
 
 class DivisiRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
