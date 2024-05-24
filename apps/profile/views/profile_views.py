@@ -22,8 +22,7 @@ class ProfileListCreateAPIView(generics.ListCreateAPIView):
         elif id_divisi :
             queryset = queryset.filter(divisi_id = id_divisi)
         elif id_jabatan :
-            queryset = queryset.filter(jabatan_id = id_jabatan)
-        
+            queryset = queryset.filter(jabatan_id = id_jabatan)      
 
         if not queryset:
             raise NotFound("User not found!")

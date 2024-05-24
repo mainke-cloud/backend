@@ -6,8 +6,8 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import AuthenticationFailed
-import jwt, datetime
-from datetime import datetime as dt
+import jwt
+from datetime import datetime as dtime, timedelta
 from django.contrib.auth import authenticate
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
@@ -59,22 +59,38 @@ class LoginView(APIView):
 
         user = User.objects.filter(username=username).first()
 
-        token = RefreshToken.for_user(user)
+        refresh = RefreshToken.for_user(user)
+        access_token = refresh.access_token
+
+        # Mengatur waktu kedaluwarsa access token menjadi 2 jam dari sekarang
+        access_token.set_exp(lifetime=timedelta(hours=3))
+
+        # Mengatur waktu kedaluwarsa refresh token jika diperlukan
+        refresh.set_exp(lifetime=timedelta(days=3))  # Misalnya 1 hari
+
+        # Mendapatkan waktu expired dari access token
+        access_token_exp = dtime.fromtimestamp(access_token['exp'])
+
+        # Mendapatkan waktu expired dari refresh token
+        refresh_token_exp = dtime.fromtimestamp(refresh['exp'])
         
         if user and user.check_password(password):
             # Generate JWT token
-            payload = {
-                'id': user.id,
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
-                'iat': datetime.datetime.utcnow()
-            }
+            # payload = {
+            #     'id': user.id,
+            #     'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
+            #     'iat': datetime.datetime.utcnow()
+            # }
             # token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
             
             # Create a response object
             response = Response({
                 'id': user.id,
                 'username': username,
-                'jwt': str(token.access_token)
+                'jwt': str(access_token),
+                'access_token_exp': access_token_exp,
+                'refresh_token_exp': refresh_token_exp,
+                'message': "Succes Login!",
             })
             
             return response

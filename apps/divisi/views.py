@@ -2,6 +2,7 @@ from rest_framework import generics
 from apps.divisi.models import Divisi
 from apps.divisi.serializers import DivisiSerializer
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
 
 
 class DivisiListCreateAPIView(generics.ListCreateAPIView):
@@ -10,7 +11,7 @@ class DivisiListCreateAPIView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         id_departemen = self.request.query_params.get('id_departemen')
-        queryset = Departemen.objects.all()
+        queryset = Divisi.objects.all()
         if id_departemen :
             queryset = queryset.filter(departemen_id = id_departemen)
         if not queryset:
