@@ -25,7 +25,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = Profile
-        fields = ['user_id','username','email','nama_lengkap','divisi_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','divisi','jabatan','nama_lengkap','my_sekretaris','my_delegasi']
+        fields = ['user_id','username','email','nama_lengkap','divisi_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','role','divisi','jabatan','nama_lengkap','my_sekretaris','my_delegasi']
         extra_kwargs = {
         'divisi': {'write_only': True},
         'jabatan': {'write_only': True},
@@ -75,6 +75,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.nik_lokal = validated_data.get('nik_lokal', instance.nik_lokal)
         instance.organisasi = validated_data.get('organisasi', instance.organisasi)
         instance.nama_lengkap = validated_data.get('nama_lengkap', instance.nama_lengkap)
+        instance.role = validated_data.get('role', instance.role)
         instance.is_first_login = validated_data.get('is_first_login', False)
 
         instance.save()
@@ -100,8 +101,8 @@ class SekretarisSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         try:
-            instance.status = validated_data['status']
-            instance.sifat = validated_data['sifat']
+            instance.status = validated_data.get('status', False)
+            instance.sifat = validated_data.get('sifat', False)
             instance.hak_sekretaris = validated_data['hak_sekretaris']
             instance.tgl_pembuatan = validated_data['tgl_pembuatan']
             instance.save()

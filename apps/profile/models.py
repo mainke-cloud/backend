@@ -16,6 +16,7 @@ class Profile(models.Model):
     nik_lokal = models.CharField(max_length=20, default="-")
     organisasi = models.CharField(max_length=100, default="-")
     is_first_login = models.BooleanField(default=True)
+    role = models.CharField(max_length=20, default="User")
 
     def __str__(self):
         return f"{self.nama_lengkap}" 
@@ -23,9 +24,9 @@ class Profile(models.Model):
 class Sekretaris(models.Model): 
     atasan = models.ForeignKey(Profile, related_name='sekretaris_atasan', on_delete=models.CASCADE)
     sekretaris = models.ForeignKey(Profile, related_name='sekretaris_bawahan', on_delete=models.CASCADE)
-    status = models.CharField(max_length=50, null=True, default=None)
-    sifat = models.CharField(max_length=50, null=True, default=None)
-    hak_sekretaris = models.CharField(max_length=50, null=True, default=None)
+    status = models.BooleanField(default=True)
+    sifat = models.BooleanField(default=True)
+    hak_sekretaris = models.CharField(max_length=50, null=True, default='Biasa')
     tgl_pembuatan = models.DateField()
 
     def __str__(self):
