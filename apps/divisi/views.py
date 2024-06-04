@@ -7,7 +7,7 @@ from rest_framework.exceptions import NotFound
 
 class DivisiListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = DivisiSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         id_departemen = self.request.query_params.get('id_departemen')
@@ -21,4 +21,4 @@ class DivisiListCreateAPIView(generics.ListCreateAPIView):
 class DivisiRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Divisi.objects.all()
     serializer_class = DivisiSerializer
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]

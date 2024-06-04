@@ -9,8 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 class DepartemenListCreateAPIView(generics.ListCreateAPIView):
     queryset = Departemen.objects.all()
     serializer_class = DepartemenSerializer
+    permission_classes = [IsAuthenticated]
 
 class DepartemenRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DepartemenSerializer
     queryset = Departemen.objects.all()
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
