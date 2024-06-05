@@ -11,7 +11,7 @@ sys.path.insert(0, str(BASE_DIR / "apps"))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = "django-insecure-h(35e6h29f%nz=(3jaa(c_q-e=nk@y+3!ubsvs@efc#y##4g*p"
-
+    
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -164,8 +164,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 if os.environ.get("USE_MINIO"):
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
-    AWS_ACCESS_KEY_ID = os.environ.get("MINIO_KEY", "miniadmin")
-    AWS_SECRET_ACCESS_KEY = os.environ.get("MINIO_SECRET", "minion")
+    AWS_ACCESS_KEY_ID = os.environ.get("MINIO_KEY", "minioadmin")
+    AWS_SECRET_ACCESS_KEY = os.environ.get("MINIO_SECRET", "miniopassword")
     AWS_STORAGE_BUCKET_NAME = os.environ.get("MINIO_BUCKET", "coofis")
     AWS_S3_ENDPOINT_URL = os.environ.get("MINIO_URL", "https://localhost/9000")  # Ganti dengan endpoint MinIO Anda
     AWS_S3_REGION_NAME = 'us-east-1'

@@ -25,11 +25,15 @@ class SuratListCreateView(generics.ListCreateAPIView):
         queryset = Surat.objects.all()
         status = self.request.query_params.get('status', None)
         kategori = self.request.query_params.get('kategori', None)
+        urgensi = self.request.query_params.get('urgensi', None)
+
 
         if status is not None:
             queryset = queryset.filter(status=status)
         if kategori is not None:
             queryset = queryset.filter(kategori=kategori)
+        if urgensi is not None:
+            queryset = queryset.filter(urgensi=urgensi)
         
         return queryset
     
