@@ -37,6 +37,7 @@ urlpatterns = [
         ),
     ),
         path('lampiran/', include('apps.lampiran.urls')),
+        path('klasifikasi/', include('apps.klasifikasi.urls')),
         path('surat/', include('apps.surat.urls')),
         path('group/', include('apps.group.urls')),
     ])),

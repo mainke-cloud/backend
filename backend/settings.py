@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'profile',
     'lampiran',
     'surat',
+    'klasifikasi',
     'group',
     'drf_yasg',
     'djongo',
