@@ -13,33 +13,6 @@ from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
-# class IsAuthenticatedAndTokenExists(permissions.BasePermission):
-#     def has_permission(self, request, view):
-#         # token = request.COOKIES.get('jwt')
-#         token = request.session.get('user')['jwt']
-
-#         if not token:
-#             return False
-
-#         try:
-#             decoded_token = jwt.decode(token, settings.SECRET_KEY, algorithms=['HS256'])
-#             exp_timestamp = decoded_token.get('exp')
-#             if exp_timestamp:
-#                 exp_datetime = dt.utcfromtimestamp(exp_timestamp).replace(tzinfo=None)
-#                 if exp_datetime < dt.utcnow():
-#                     # Token sudah kadaluwarsa
-#                     return False
-#             else:
-#                 # Token tidak memiliki waktu kadaluarsa
-#                 return False
-            # Token valid dan belum kadaluwarsa
-        #     return True
-        # except jwt.ExpiredSignatureError:
-        #     raise AuthenticationFailed('Token expired, please log in again.')
-        # except jwt.InvalidTokenError:
-        #     raise AuthenticationFailed('Invalid token, please log in again.')
-
 class RegisterView(APIView):
     def post(self, request):
         username = request.data['username']
@@ -48,6 +21,18 @@ class RegisterView(APIView):
             raise AuthenticationFailed('User is already!')
 
         serializer = UserRegisterSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+class RegisterAdminView(APIView):
+    def post(self, request):
+        email = request.data['email']
+        user = User.objects.filter(email=email).first()
+        if user :
+            raise AuthenticationFailed('User is already!')
+
+        serializer = UserAdminRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -75,15 +60,6 @@ class LoginView(APIView):
         refresh_token_exp = dtime.fromtimestamp(refresh['exp'])
         
         if user and user.check_password(password):
-            # Generate JWT token
-            # payload = {
-            #     'id': user.id,
-            #     'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=120),
-            #     'iat': datetime.datetime.utcnow()
-            # }
-            # token = jwt.encode(payload, settings.SECRET_KEY, algorithm='HS256')
-            
-            # Create a response object
             response = Response({
                 'id': user.id,
                 'username': username,
