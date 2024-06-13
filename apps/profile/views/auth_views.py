@@ -12,13 +12,18 @@ from django.contrib.auth import authenticate
 from django.conf import settings
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import status
 
 class RegisterView(APIView):
     def post(self, request):
         username = request.data['username']
-        user = User.objects.filter(username=username).first()
-        if user :
-            raise AuthenticationFailed('User is already!')
+        email = request.data['email']
+
+        if User.objects.filter(username=username).first():
+            return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if User.objects.filter(email=email).first():
+            return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = UserRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -27,10 +32,14 @@ class RegisterView(APIView):
 
 class RegisterAdminView(APIView):
     def post(self, request):
+        username = request.data['username']
         email = request.data['email']
-        user = User.objects.filter(email=email).first()
-        if user :
-            raise AuthenticationFailed('User is already!')
+
+        if User.objects.filter(username=username).first():
+            return Response({"error": "Username already exists"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        if User.objects.filter(email=email).first():
+            return Response({"error": "Email already exists"}, status=status.HTTP_400_BAD_REQUEST)
 
         serializer = UserAdminRegisterSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
