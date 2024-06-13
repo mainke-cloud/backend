@@ -47,11 +47,11 @@ class LoginView(APIView):
         refresh = RefreshToken.for_user(user)
         access_token = refresh.access_token
 
-        # Mengatur waktu kedaluwarsa access token menjadi 2 jam dari sekarang
-        access_token.set_exp(lifetime=timedelta(hours=3))
+        # Mengatur waktu kedaluwarsa access token menjadi 3 hari dari sekarang
+        access_token.set_exp(lifetime=timedelta(days=3))
 
         # Mengatur waktu kedaluwarsa refresh token jika diperlukan
-        refresh.set_exp(lifetime=timedelta(days=3))  # Misalnya 1 hari
+        refresh.set_exp(lifetime=timedelta(days=3))  # Misalnya 3 hari
 
         # Mendapatkan waktu expired dari access token
         access_token_exp = dtime.fromtimestamp(access_token['exp'])
@@ -72,13 +72,3 @@ class LoginView(APIView):
             return response
         else:
             return Response({'message': 'Invalid credentials'}, status=400)
-
-class LogoutView(APIView):
-    def post(self, request):
-        response = Response()
-        response.delete_cookie('jwt')
-        response.delete_cookie('id')
-        response.data = {
-            'message': 'Logout Success!'
-        }
-        return response 

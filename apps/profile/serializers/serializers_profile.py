@@ -25,7 +25,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         
     class Meta:
         model = Profile
-        fields = ['user_id','username','email','nama_lengkap','divisi_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','role','divisi','jabatan','nama_lengkap','my_sekretaris','my_delegasi']
+        fields = ['user_id','username','email','nama_lengkap','divisi_detail','jabatan_detail','alamat','kota', 'phone_number', 'nik_group', 'nik_lokal', 'organisasi','is_first_login','role','divisi','jabatan','personal','nama_lengkap','my_sekretaris','my_delegasi']
         extra_kwargs = {
         'divisi': {'write_only': True},
         'jabatan': {'write_only': True},
@@ -77,6 +77,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         instance.nama_lengkap = validated_data.get('nama_lengkap', instance.nama_lengkap)
         instance.role = validated_data.get('role', instance.role)
         instance.is_first_login = validated_data.get('is_first_login', False)
+        instance.personal = validated_data.get('personal', False)
 
         instance.save()
         return instance

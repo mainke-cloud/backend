@@ -17,6 +17,7 @@ class Profile(models.Model):
     organisasi = models.CharField(max_length=100, default="-")
     is_first_login = models.BooleanField(default=True)
     role = models.CharField(max_length=20, default="User")
+    personal = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.nama_lengkap}" 
