@@ -3,8 +3,8 @@
   <body>
     <script>
       localStorage.setItem("token", "{{ access_token }}");
-      localStorage.setItem("user", "{{ response }}");
-      location.href =  "/";
+      localStorage.setItem("user", "{{ response|safe }}");
+      <!-- location.href =  "/"; -->
     </script>
   </body>
   </html>

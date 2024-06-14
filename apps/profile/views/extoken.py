@@ -22,14 +22,14 @@ def token(request):
     
     access_token = str(access_token)
 
-    response = json.dumps({
+    response = {
                 'id': user.id,
                 'username': user.username,
                 'jwt': access_token,
                 'access_token_exp': access_token_exp,
                 'refresh_token_exp': refresh_token_exp,
                 'message': "Succes Login!",
-            },default=str)
+            }
 
 
     return render(request, "extoken.html", locals())
