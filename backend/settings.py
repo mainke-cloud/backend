@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 import sys
+from django.conf import settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -24,6 +25,7 @@ ALLOWED_HOSTS = ['*',]
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
+    'mozilla_django_oidc',
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
@@ -136,7 +138,10 @@ AUTH_PASSWORD_VALIDATORS = [
     # },
 ]
 
-
+AUTHENTICATION_BACKENDS = [ 
+        "django.contrib.auth.backends.ModelBackend",
+        "mozilla_django_oidc.auth.OIDCAuthenticationBackend"
+]
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -161,6 +166,19 @@ MEDIA_URL = os.environ.get("MEDIA_URL", "media/")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+OIDC_RP_CLIENT_ID = os.environ.get('OIDC_RP_CLIENT_ID', "nde")
+OIDC_RP_CLIENT_SECRET = os.environ.get('OIDC_RP_CLIENT_SECRET', "CPeUriP0S9kGlQ56cQdtgBW6DzDSUDkv")
+OIDC_BASE_URL = os.environ.get("OIDC_BASE_URL","https://newsso.coofis.com")
+OIDC_REALMS = os.environ.get("OIDC_REALMS", "coofis")
+OIDC_OP_AUTHORIZATION_ENDPOINT = f"{OIDC_BASE_URL}/realms/{OIDC_REALMS}/protocol/openid-connect/auth"
+OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_BASE_URL}/realms/{OIDC_REALMS}/protocol/openid-connect/token"
+OIDC_OP_USER_ENDPOINT = f"{OIDC_BASE_URL}/realms/{OIDC_REALMS}/protocol/openid-connect/userinfo"
+OIDC_OP_JWKS_ENDPOINT = f"{OIDC_BASE_URL}/realms/{OIDC_REALMS}/protocol/openid-connect/certs"
+OIDC_RP_SIGN_ALGO = 'RS256'
+OIDC_CREATE_USER = False
+
+LOGIN_REDIRECT_URL = os.environ.get("LOGIN_REDIRECT_URL", "/api/auth/extoken")
 
 if os.environ.get("USE_MINIO"):
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'

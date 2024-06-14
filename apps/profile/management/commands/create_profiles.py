@@ -30,6 +30,16 @@ class Command(BaseCommand):
             departemen_obj = Departemen.objects.get(id=departemen)
             jabatan_obj = Jabatan.objects.get(id=jabatan)
 
-            profile = Profile.objects.create(user=user_obj, nama_lengkap=nama_lengkap, alamat=alamat, kota=kota, phone_number=phone_number, nik_group=nik_group, nik_lokal=nik_lokal, organisasi=organisasi, is_first_login=is_first_login, departemen=departemen_obj, jabatan=jabatan_obj)
+            #profile = Profile.objects.create(user=user_obj, nama_lengkap=nama_lengkap, alamat=alamat, kota=kota, phone_number=phone_number, nik_group=nik_group, nik_lokal=nik_lokal, organisasi=organisasi, is_first_login=is_first_login, departemen=departemen_obj, jabatan=jabatan_obj)
+            profile = Profile.objects.create(user=user_obj, 
+                                             nama_lengkap=nama_lengkap, 
+                                             alamat=alamat, 
+                                             kota=kota, 
+                                             phone_number=phone_number, 
+                                             nik_group=nik_group, 
+                                             nik_lokal=nik_lokal, 
+                                             organisasi=organisasi, 
+                                             is_first_login=is_first_login, 
+                                             jabatan=jabatan_obj)
 
             self.stdout.write(self.style.SUCCESS(f"Profile '{nama_lengkap}' berhasil ditambahkan"))
